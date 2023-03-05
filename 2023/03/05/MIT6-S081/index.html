@@ -1,0 +1,752 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Peng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MIT6.S081categories: C   《xv6: a simple, Unix-like teaching operating system》一、 操作系统接口（Operating system interfaces） ​	操作系统的工作是在多个程序之间共享一台计算机，并提供一个比硬件本身支持的更有用的服务集，操作系统在多个程序之间共享硬件资源，以便它们（看似）同时运行，操作系统为程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6.S081">
+<meta property="og:url" content="http://example.com/2023/03/05/MIT6-S081/index.html">
+<meta property="og:site_name" content="学习笔记">
+<meta property="og:description" content="MIT6.S081categories: C   《xv6: a simple, Unix-like teaching operating system》一、 操作系统接口（Operating system interfaces） ​	操作系统的工作是在多个程序之间共享一台计算机，并提供一个比硬件本身支持的更有用的服务集，操作系统在多个程序之间共享硬件资源，以便它们（看似）同时运行，操作系统为程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="g:\typora_image_store\image-20221216124255467.png">
+<meta property="article:published_time" content="2023-03-05T14:12:59.000Z">
+<meta property="article:modified_time" content="2023-03-05T14:33:06.443Z">
+<meta property="article:author" content="Peng">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="g:\typora_image_store\image-20221216124255467.png">
+  
+  
+  
+  <title>MIT6.S081 - 学习笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"pv6Gdlea1tYTg3XDi99udiLI-MdYXbMMI","app_key":"b4dfQhb4rFEkGvnH6L7spSSZ","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>JAYPENG的学习笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MIT6.S081"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-05 22:12" pubdate>
+          2023年3月5日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          85 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MIT6.S081</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
+<li>MIT6.S081<br>categories:</li>
+<li>C</li>
+</ul>
+<hr>
+<h3 id="《xv6-a-simple-Unix-like-teaching-operating-system》"><a href="#《xv6-a-simple-Unix-like-teaching-operating-system》" class="headerlink" title="《xv6: a simple, Unix-like teaching operating system》"></a>《xv6: a simple, Unix-like teaching operating system》</h3><p>一、 操作系统接口（Operating system interfaces）</p>
+<p>​	操作系统的工作是在多个程序之间共享一台计算机，并提供一个比硬件本身支持的更有用的服务集，操作系统在多个程序之间共享硬件资源，以便它们（看似）同时运行，操作系统为程序交互提供受控方式，以便它们可以共享数据或者协同工作。</p>
+<img src="G:\typora_image_store\image-20221216124255467.png" srcset="/img/loading.gif" lazyload alt="image-20221216124255467" style="zoom:80%;" />
+
+<p>每个运行的程序称之为进程，由包含指令的内存，数据和栈组成。指令实行程序的计算，数据交由计算执行，栈管理程序的调度。当一个进程需要唤醒一个kernel服务，它就唤醒了一个system call，每个system call 进入内核，内核完成服务并返回。kernel使用了硬件保护机制提供给CPU，确保每个进程在自己的用户空间只能访问自己的内存。用户程序执行时没有这种特权，当一个用户程序唤醒一个系统调用时，硬件会提升权限并开始执行预先在内核中排序好的程序。内核提供的系统调用集合是用户程序看到的接口。</p>
+<p>shell是一个原生的程序用来读取指令并执行。实际上，shell是一个用户程序，而不是内核的一部分。</p>
+<p>1.1 processes and memory</p>
+<p>xv6包含用户空间内存（指令、数据、栈），和内核私有的每个进程状态。当进程不再执行时xv6将存储和这些进程相关的CPU寄存器直到下一次运行这些进程，内核通过pid连接每个进程。</p>
+<p><code>int fork()</code>：一个进程可以通过<code>fork</code>创建一个新的进程，提供相同的内存上下文包括指令和数据，但内存地址和寄存器是不一样的，父进程返回子进程的pid，子进程返回0。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> pid = fork();  <span class="hljs-comment">//fork之后，父子进程同时开始判断pid的值，看哪个进程先判断好pid才会决定输出顺序。</span><br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;pid=%d\n&quot;</span>, pid);<br><span class="hljs-keyword">if</span>(pid &gt; <span class="hljs-number">0</span>)&#123;<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;parent: child=%d\n&quot;</span>, pid);<br>	pid = wait((<span class="hljs-type">int</span> *) <span class="hljs-number">0</span>); <span class="hljs-comment">//父进程发现子进程exit之后，wait执行完毕，打印输出。</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;child %d is done\n&quot;</span>, pid);<br>&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(pid == <span class="hljs-number">0</span>)&#123;<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;child: exiting\n&quot;</span>);<br>	<span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);  <span class="hljs-comment">//子进程在判断pid==0之后将exit,</span><br>&#125; <span class="hljs-keyword">else</span> &#123;<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;fork error\n&quot;</span>);<br>&#125;<br><br>---<br>输出：<br>pid=<span class="hljs-number">2018356</span><br>parent:child=<span class="hljs-number">2018356</span><br>pid=<span class="hljs-number">0</span><br>child:existing<br>child <span class="hljs-number">2018356</span> is done  <span class="hljs-comment">//当子进程退出后，父进程的wait就会返回。</span><br><br></code></pre></td></tr></table></figure>
+
+<p><code>int exit(int status)</code>: 系统调用会停止执行并释放资源,如内存和打开的文件,需要一个整型的状态参数，返回值0表示正常状态退出，1表示非正常状态退出。</p>
+<p><code>int wait(int *status)</code>：系统调用返回当前进程被停止或被杀掉的子进程的状态，返回子进程的PID， 子进程的退出状态存储到 int *status这个地址中，并将状态码拷贝到内存中等待。如果调用者没有子进程，wait立即返回-1，如果父进程不在乎子进程的退出态，它可以给一个0地址给wait。父进程和子进程有着相同的内存上下文，但是在不同的内存和寄存器中执行。改变一个并不会改变另一个。如当wait的返回值被父进程存储到pid中时，它不会改变子进程中变量pid中的值，子进程中的变量pid的值还是0。</p>
+<p><code>int exec(char *file, char *argv[])</code>:加载一个文件，获取执行它的参数，执行，如果执行错误返回-1，执行成功不返回，而是开始从文件入口位置开始执行命令。文件必须有一个特殊的格式，必须指明哪一部分是保存指令，哪一部分是数据。xv6使用的是ELF文件格式，当exec成功时，他不会返回给调用程序，相反，从文件加载的指令在 ELF 标头中声明的入口点开始执行。exec输入两个参数：文件包含的可执行文件名和一组参数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//xv6 shell使用以上四个system call来为用户执行程序。在shell进程的main中主循环先通过getcmd来从用户获取命令，然后调用fork来运行一个和当前shell进程完全相同的子进程。父进程调用wait等待子进程exec执行完（在runcmd中调用exec）</span><br><br><span class="hljs-type">char</span> *argv[<span class="hljs-number">3</span>];<br>argv[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;echo&quot;</span>;<br>argv[<span class="hljs-number">1</span>] = <span class="hljs-string">&quot;hello&quot;</span>;<br>argv[<span class="hljs-number">2</span>] = <span class="hljs-number">0</span>;<br>exec(<span class="hljs-string">&quot;/bin/echo&quot;</span>, argv);<br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;exec error\n&quot;</span>);<br><span class="hljs-comment">//---------------------------------------------------</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-type">static</span> <span class="hljs-type">char</span> buf[<span class="hljs-number">100</span>];<br>    <span class="hljs-type">int</span> fd;<br>    <span class="hljs-comment">// ensure that three file descriptions are open.</span><br>    <span class="hljs-keyword">while</span>(fd = open(<span class="hljs-string">&quot;console&quot;</span>, O_RDWR ) &gt;= <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-keyword">if</span>(fd &gt;= <span class="hljs-number">3</span>)&#123;<br>            close(fd);<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-comment">// read and run input commands</span><br>    <span class="hljs-keyword">while</span>(getcmd(buf, sizesof(buf)) &gt;= <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-keyword">if</span>(buf[<span class="hljs-number">0</span>] == <span class="hljs-string">&#x27;c&#x27;</span> &amp;&amp; buf[<span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;d&#x27;</span> &amp;&amp; buf[<span class="hljs-number">2</span>] == <span class="hljs-string">&#x27; &#x27;</span>)&#123;<br>            <span class="hljs-comment">// chdir must be called by the parent, not the child.</span><br>            buf[<span class="hljs-built_in">strlen</span>(buf) - <span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;<br>            <span class="hljs-keyword">if</span>(chdir(buf + <span class="hljs-number">3</span>) &lt; <span class="hljs-number">0</span>)<br>                <span class="hljs-built_in">fprintf</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&quot;cannot cd %s\n&quot;</span>, buf + <span class="hljs-number">3</span>);<br>            <span class="hljs-keyword">continue</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span>(fork1() == <span class="hljs-number">0</span>)<br>            runcmd(parsecmd(buf));<br>        wait(<span class="hljs-number">0</span>);<br>    &#125;<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>避免创建重复进程然后立即替换它的浪费,操作内核通过使用虚拟内存技术（如写时复制 copy-on-write）优化此用例的 <code>fork</code> 实现。xv6 隐式分配大部分用户空间内存：<code>fork</code> 分配父内存的子副本所需的内存，<code>exec</code> 分配足够的内存来保存可执行文件。在运行时需要更多内存的进程（可能是 <code>malloc</code>）可以调用 <code>sbrk(n)</code> 将其数据内存增加 n 字节； <code>sbrk</code> 返回新内存的位置。</p>
+<p>1.2 输入输出和文件描述符 (I&#x2F;O and file descriptors)</p>
+<p>文件描述符是用来表征一个进程将从哪里读取或者写入到哪里的内核管理对象。一个进程可以通过打开一个文件、目录或设备或创建一个管道，或复制一个已经存在的描述符。文件描述符接口抽象了文件、管道和设备之间的差异，使它们看起来都像字节流。xv6 内核使用文件描述符作为每个进程表的索引，因此每个进程都有一个从零开始的文件描述符的私有空间。每个进程都拥有自己独立的文件描述符列表，<strong>其中0是标准输入，1是标准输出，2是标准错误</strong>。shell将保证总是有3个文件描述符是可用的。</p>
+<p><code>int read(int fd, char * buf, int n)</code>; 从文件描述符<code>fd</code>中读取n字节的数据拷贝到<code>buf</code>中，<strong>返回值是读取的字节数</strong>。每个文件描述符都有一个与之相关的offset。read 从当前文件偏移量读取数据，然后将该偏移量增加读取的字节数，下一个<code>read</code>将从新的<code>offset</code>开始读取字节，当没有更多的字节可以读取时，<code>read</code>返回0来表示读取到文件的结束。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;kernel/types.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;kernel/stat.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;user/user.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MSGSIZE 16</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> * argv[])</span>&#123;<br>    <span class="hljs-type">char</span> buf[MEGSIZE];<br>    read(<span class="hljs-number">0</span>, buf, MSGSIZE); <span class="hljs-comment">//获取前一个命令的标准化输出，即当前命令的标准化输入</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;获取到的标准化输入:%s\n&quot;</span>, buf);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>int write(int fd, char *buf,int n)</code>；从buf中写入n字节的数据到文件描述符fd中，返回值是有多少的字节数据被写入。当少于n个字节的数据被写入时互出现错误，通read一样存在偏移量。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//cat命令的实现</span><br><span class="hljs-type">char</span> buf[<span class="hljs-number">512</span>];<br><span class="hljs-type">int</span> n;<br><span class="hljs-keyword">for</span>(;;)&#123;<br>    n = read(<span class="hljs-number">0</span>, buf, <span class="hljs-keyword">sizeof</span> buf);<br>    <span class="hljs-keyword">if</span>(n == <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">if</span>(n &lt; <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-built_in">fprintf</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&quot;read error\n&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br>    <span class="hljs-keyword">if</span>(write(<span class="hljs-number">1</span>, buf, n) != n)&#123;<br>        <span class="hljs-built_in">fprintf</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&quot;write error\n&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>int close(int fd)</code>:系统调用，释放一个文件描述符，让它变得可以被未来的open pipe 或者dup系统调用使用。</p>
+<p><code>fork</code>拷贝父进程的文件描述符到自己的内存空间中，因此子进程可以像父进程一样打开文件，<code>exec</code>代替了调用进程的内存，但是将它保留在文件表中。父进程的<code>fd table</code>将不会被子进程<code>fd table</code>的变化影响，但是文件中的<code>offset</code>将被共享。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// cat 命令的实现 cat &lt; input.txt</span><br><span class="hljs-type">char</span> *argv[<span class="hljs-number">2</span>];<br>argv[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;cat&quot;</span>;<br>argv[<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;<br><span class="hljs-keyword">if</span>(fork() == <span class="hljs-number">0</span>)&#123;<br>    close(<span class="hljs-number">0</span>);<br>    open(<span class="hljs-string">&quot;input.txt&quot;</span>, O_RDONLY);<br>    exec(<span class="hljs-string">&quot;cat&quot;</span>, argv);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>关键字： O_RDONLY：打开文件for reading, OWRONLY:打开文件for writting, , ORDWR:打开文件for reading and writting , O_CREATE:如果文件不存在，就创造它, O_TRUNC：将文件截断到0的长度。</p>
+<p><code>int dup(int fd)</code>:系统调用，返回一个引用相同底层 I&#x2F;O 对象的新对象。两个文件描述符共享一个偏移量，就像 fork 复制的文件描述符一样。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// another way to write hello world</span><br>fd = dup(<span class="hljs-number">1</span>);<br>write(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;hello &quot;</span>, <span class="hljs-number">6</span>);<br>write(fd, <span class="hljs-string">&quot;world\n&quot;</span>, <span class="hljs-number">6</span>);<br></code></pre></td></tr></table></figure>
+
+<p>如果两个文件描述符是通过一系列 <code>fork</code> 和 <code>dup</code> 调用从同一个原始文件描述符派生的，则它们共享一个偏移量,否则文件描述符不共享偏移量，即使它们来自对同一文件的打开调用。<code>dup</code> 允许shell去实现一个这样的命令： ls existing-file non-existing-file &gt; tmp1 2 &gt;&amp;1, 2&gt;&amp;1 告诉 shell 给命令一个文件描述符 2，它是描述符 1 的副本。现有文件的名称和不存在文件的错误消息都将显示在文件 tmp1 中.xv6 shell 不支持错误文件描述符的 I&#x2F;O 重定向，但现在你知道如何实现它了。</p>
+<p>1.3管道</p>
+<p>管道是一个小的内核缓冲区，作为一对文件描述符暴露给进程，一个用于读取，一个用于写入。将数据写入管道的一端使该数据可用于从管道的另一端读取。 管道为进程提供了一种通信方式。（FIFO实现）</p>
+<p><code>int pipe(int p[])</code>:p[0]为读取的fd,p[1]为写入的fd。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//以下示例代码运行程序 wc，标准输入连接到管道的读取端。</span><br><span class="hljs-type">int</span> p[<span class="hljs-number">2</span>];<br><span class="hljs-type">char</span> *argv[<span class="hljs-number">2</span>];<br>argv[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;wc&quot;</span>;<br>argv[<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;<br>pipe(p);<br><span class="hljs-keyword">if</span>(fork() == <span class="hljs-number">0</span>)&#123;<br>    close(<span class="hljs-number">0</span>);<br>    dup(p[<span class="hljs-number">0</span>]);<br>    close(p[<span class="hljs-number">0</span>]);<br>    close(p[<span class="hljs-number">1</span>]);<br>    exec(<span class="hljs-string">&quot;/bin/wc&quot;</span>, argv);<br>&#125;<span class="hljs-keyword">else</span> &#123;<br>    close(p[<span class="hljs-number">0</span>]);<br>    write(p[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;hello world\n&quot;</span>, <span class="hljs-number">12</span>);<br>    close(p[<span class="hljs-number">1</span>]);<br>&#125;<br><span class="hljs-comment">//这段程序叫做pipe，它创造了一个新的管道来记录读和写的文件描述符在数组p中。在fork之后，父进程和子进程都会有文件描述符指向这个管道，子进程调用close和dup来让文件描述符0引用管道的读取端，关闭文件描述符，之后调用exec执行wc指令，当wc读取它的标准输入时，它从管道读取，父进程关闭了管道的读取端，写管道，然后关闭写端。</span><br></code></pre></td></tr></table></figure>
+
+<p>如果没有数据可用，则管道上的读取等待写入数据或关闭引用写入端的所有文件描述符； 在后一种情况下，read 将返回 0，就像已到达数据文件的末尾一样。 读取阻塞直到新数据不可能到达的事实是子进程在执行上面的 wc 之前关闭管道的写入端很重要的一个原因：如果 wc 的文件描述符之一引用了写入端管道，wc永远看不到文件结束。</p>
+<p>xv6的shell实现一个这样的命令： <code>grep fork sh.c | wc -l</code>，子进程创建一个管道来连接管道的左端和右端。之后在管道左端调用fork和runcmd指令，在管道右端调用fork和runcmd指令，然后等待两边都结束。管道的右端可能是一个命令，它本身包含一个管道（例如，a | b | c），它本身会派生两个新的子进程（一个用于 b，一个用于 c）。因此，shell 可以创建一个进程树。这棵树的叶子节点是命令，内部节点是等待左右子节点完成的进程。原则上，可以让内部节点运行在管道的左端，但如果这样做正确的话会使实施变得复杂。考虑仅进行以下修改：<br>将 sh.c 更改为不分叉 <code>p-&gt;left</code> 并在内部进程中运行 <code>runcmd(p-&gt;left)</code>。之后例如：<code>echo hi | wc</code>不会产生输出，因为在<code>runcmd</code>中echo hi退出时，内部进程退出，从不调用fork运行右端管道,这种不正确的行为可以通过不在 runcmd 中为内部进程调用 exit 来修复，但此修复使代码复杂化：现在 <code>runcmd</code> 需要知道它是否在内部进程中。当不分叉 <code>runcmd(p-&gt;right)</code> 时也会出现并发症。例如，仅进行该修改，<code>sleep 10 | echo hi</code> 将立即打印“hi”和一个新提示，而不是在 10 秒后； 发生这种情况是因为 echo 立即运行并退出，而不是等待 sleep 完成。由于 sh.c 的目标是尽可能简单，它不会试图避免创建内部进程。</p>
+<p>在这种情况下，管道比临时文件至少有四个优势。第一：管道会自动清理自己，使用文件重定向，shell必须小心删除&#x2F;tmp&#x2F;xyz当它执行完成后。其次，管道可以传递任意长的数据流，而文件重定向需要磁盘上有足够的可用空间来存储所有数据。 第三、管道允许管道并行执行阶段，而文件方法要求第一个程序在第二个程序开始之前完成。 第四，如果你正在实现进程间通信，管道的阻塞读写比文件的非阻塞语义更高效。</p>
+<p>1.4文件系统</p>
+<p>xv6 文件系统提供数据文件，其中包含未解释的字节数组（byte array）和目录，其中包含对数据文件和其他目录的命名引用。这些目录形成一棵树，从称为root的特殊目录开始。不以 &#x2F; 开头的路径是相对于调用进程的当前目录进行评估的（相对路径），该目录可以通过 <code>chdir</code> 系统调用进行更改。这两个代码片段都打开同一个文件（假设所有涉及的目录都存在)。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">chdir(<span class="hljs-string">&quot;/a&quot;</span>);<br>chdir(<span class="hljs-string">&quot;b&quot;</span>);<br>open(<span class="hljs-string">&quot;c&quot;</span>, O_RDONLY);<br>open(<span class="hljs-string">&quot;/a/b/c&quot;</span>, O_RDONLY);<br><span class="hljs-comment">//第一个片段将进程的当前目录更改为/a/b； 第二个既不引用也不更改进程的当前目录。</span><br></code></pre></td></tr></table></figure>
+
+<p>有创建新文件和目录的系统调用：<code>mkdir</code> 创建新目录，使用 <code>O_CREATE</code> 标志打开创建新数据文件，<code>mknod</code> 创建新设备文件。 这个例子说明了所有三个：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">mkdir(<span class="hljs-string">&quot;/dir&quot;</span>);<br>fd = open(<span class="hljs-string">&quot;/dir/file&quot;</span>, O_CREATE|O_WRONLY);<br>close(fd);<br>mknod(<span class="hljs-string">&quot;/console&quot;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<p><code>mknod</code> 创建一个引用设备的特殊文件,与设备文件相关联的是主设备号（major device）和次设备号(minor device),通过这两个参数唯一的确定这个设备，<code>mknod</code> 的两个参数，它们唯一地标识内核设备。当进程稍后打开设备文件时，内核将read和write系统调用转移到这个内核设备上，而不是将它们传递给文件系统。</p>
+<p>文件名与文件本身不同； 同一个底层文件，称为索引节点（<code>inode</code>），可以有多个名称，称为links。每个link都包含目录中的一个条目； 该条目包含一个文件名称和对 <code>inode</code> 的引用。<code>inode</code> 保存有关文件的元数据，包括其类型（文件或目录或设备）、长度、文件内容在磁盘上的位置以及文件的链接数。</p>
+<p><code>int fstat(int fd, struct stat *st)</code> ：系统调用从文件描述符<strong>fd</strong>引用的 <code>inode</code> 检索信息，将<code>inode</code>中的相关信息存储到<strong>st</strong>中。执行成功返回0， 失败返回-1。在 stat.h (kernel&#x2F;stat.h) 中定义为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span>  T_DIR 1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> T_FILE 2</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> T_DEVICE 3</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">stat</span>&#123;</span><br>    <span class="hljs-type">int</span> dev; <span class="hljs-comment">//file system&#x27;s disk device</span><br>    uint ino; <span class="hljs-comment">//inode number</span><br>    <span class="hljs-type">short</span> type; <span class="hljs-comment">//type of file</span><br>    <span class="hljs-type">short</span> nlink; <span class="hljs-comment">// number of links to file</span><br>    uint64 size; <span class="hljs-comment">//size of file in bytes</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><code>link</code>:系统调用，创建一个指向同一个<code>inode</code>的文件名。<code>unlink</code>则是将一个文件名从文件系统中移除，只有当指向这个<code>inode</code>的文件名的数量为0时，这个<code>inode</code>以及其存储的文件内容才会被从硬盘上移除。 此片段创建一个名为 a 和 b 的新文件。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">open(<span class="hljs-string">&quot;a&quot;</span>, O_CREATE|O_WRONLY);<br>link(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>从 a 读取或写入 a 与从 b 读取或写入相同。每个 <code>inode</code> 都由唯一的 <code>inode</code> 编号标识。在上面的代码执行之后，可以通过检查 fstat 的结果来确定 a 和 b 引用相同的底层内容：两者都将返回相同的 <code>inode</code> 号（ino），并且 nlink 计数将设置为 2。<code>unlink</code> 系统调用从文件系统中删除一个名称。 只有当文件的链接计数为零并且没有文件描述符引用它时，文件的索引节点和保存其内容的磁盘空间才会被释放。 从而添加 <code>unlink(&quot;a&quot;)；</code>到最后一个代码序列使 <code>inode</code> 和文件内容可访问为 b。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">fd = open(<span class="hljs-string">&quot;/tmp/xyz&quot;</span>, O_CREATE|O_RDWR);<br>unlink(<span class="hljs-string">&quot;/tmp/xyz&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>以上代码是创建一个没有名称的临时 <code>inode</code> 的惯用方法，当进程关闭 fd 或退出时将被清理。</p>
+<p>Unix 提供可从 shell 调用的文件实用程序作为用户级程序，例如 <code>mkdir</code>、<code>ln</code> 和 <code>rm</code>等。这种设计允许任何人通过添加新的用户级程序来扩展命令行界面。事后看来，这个计划似乎很明显，但在 Unix 时代设计的其他系统通常将此类命令内置到 shell 中（并将 shell 内置到内核中）。一个例外是 cd，它内置于 shell (user&#x2F;sh.c:160) 中。 cd 必须更改 shell 本身的当前工作目录。 如果 cd 作为常规命令运行，则 shell 将派生一个子进程，子进程将运行 cd，而 cd 将更改子进程的工作目录。 父级（即 shell 的）工作目录不会改变。</p>
+<p>1.5 Real world</p>
+<p>Unix 将“标准”文件描述符、管道和用于操作它们的方便的 shell 语法相结合，这是编写通用可重用程序的重大进步。 这个想法引发了一场 “软件工具”文化,也是 Unix 强大和流行的主要原因，而 shell 是第一个所谓的“脚本语言”。 Unix 系统调用接口今天在 BSD、Linux 和 macOS 等系统中仍然存在。Unix 系统调用接口已通过可移植操作系统接口 (POSIX) 标准进行了标准化。xv6 不符合 POSIX：它缺少许多系统调用（包括基本的系统调用，例如 <code>lseek</code>），并且它提供的许多系统调用与标准不同。 xv6 的主要目标是简单明了，同时提供简单的类 UNIX 系统调用接口。 为了运行基本的 Unix 程序，一些人用更多的系统调用和一个简单的 C 库扩展了 xv6。然而，与 xv6 相比，现代内核提供了更多的系统调用和更多种类的内核服务。 例如，它们支持网络、窗口系统、用户级线程、许多设备的驱动程序等等。 现代内核不断快速发展，并提供许多超越 POSIX 的功能。</p>
+<p>Unix 使用一组文件名和文件描述符接口统一访问多种类型的资源（文件、目录和设备）。 这个想法可以扩展到更多种类的资源；一个很好的例子是Plan 9，它将“资源是文件”的概念应用于网络、图形等。然而，大多数 Unix 派生的操作系统并没有遵循这条路线。</p>
+<p>文件系统和文件描述符是强大的抽象。 即便如此，还有其他操作系统接口模型。 Multics 是 Unix 的前身，它以一种使文件存储看起来像内存的方式抽象了文件存储，从而产生了一种截然不同的界面风格。 Multics 设计的复杂性直接影响了 Unix 的设计者，他们试图构建更简单的东西。</p>
+<p>Xv6 不提供用户或保护一个用户免受另一个用户侵害的概念； 在 Unix 术语中，所有 xv6 进程都以 root 身份运行。</p>
+<p>1.6 Exercises</p>
+<p>“乒乓”：创建两个进程在管道的两端，父进程发送字节到子进程，子进程接收到字节打印自己的pid和recevied ping，然后通过管道写字节到父进程，父进程接收到后打印pid和recevied pong然后退出。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span><span class="hljs-string">&quot;kernel/types.h&quot;</span></span><br><span class="hljs-meta">#includeuser/user .h<span class="hljs-string">&quot;</span></span><br><span class="hljs-string"><span class="hljs-meta">const int MESSAGE_SIZE = 7;</span></span><br><span class="hljs-string"><span class="hljs-meta">int main(int argc, char *argv[])&#123;</span></span><br><span class="hljs-string"><span class="hljs-meta">    int fd[2];</span></span><br><span class="hljs-string"><span class="hljs-meta">    char buf[MESSAGE_SIZE];</span></span><br><span class="hljs-string"><span class="hljs-meta">    pipe(fd);</span></span><br><span class="hljs-string"><span class="hljs-meta">    int pid = fork();</span></span><br><span class="hljs-string"><span class="hljs-meta">    if(pid &gt; 0)&#123;</span></span><br><span class="hljs-string"><span class="hljs-meta">        write(fd[1], &quot;</span>114514<span class="hljs-string">&quot;, 6);</span></span><br><span class="hljs-string"><span class="hljs-meta">        read(fd[0], buf, 6);</span></span><br><span class="hljs-string"><span class="hljs-meta">        printf(&quot;</span>%d: received pong\n<span class="hljs-string">&quot;, getpid());</span></span><br><span class="hljs-string"><span class="hljs-meta">        exit(0);</span></span><br><span class="hljs-string"><span class="hljs-meta">    &#125;else&#123;</span></span><br><span class="hljs-string"><span class="hljs-meta">        read(fd[0], buf, 6);</span></span><br><span class="hljs-string"><span class="hljs-meta">        printf(&quot;</span>%d: received ping\n<span class="hljs-string">&quot;, getpid());</span></span><br><span class="hljs-string"><span class="hljs-meta">        write(fd[1], &quot;</span>114514<span class="hljs-string">&quot;, 6);</span></span><br><span class="hljs-string"><span class="hljs-meta">        exit(0);</span></span><br><span class="hljs-string"><span class="hljs-meta">    &#125;</span></span><br><span class="hljs-string"><span class="hljs-meta">&#125;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>素数筛法：使用pipe和fork实现流水线，将一组数范围为2到35喂入到一个进程中，先打印出最小的一个数，这个数是素数，之后用其他的数来除这个素数，如果可以整除则将其drop，不能整除的喂入到下一个进程，直到打印出所有的素数。</p>
+<p>实现find：使用递归的方式找到指定的文件夹下的目标文件，参考user&#x2F;ls.c实现方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// hints:1.</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dirent</span> &#123;</span><br>    ushort inum;<br>    <span class="hljs-type">char</span> name[DIRSIZE];<br>&#125;<br><span class="hljs-comment">//hints:2.</span><br><span class="hljs-type">void</span> *<span class="hljs-title function_">memmove</span><span class="hljs-params">(<span class="hljs-type">void</span> *str1, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *str2, <span class="hljs-type">size_t</span> n)</span>;<span class="hljs-comment">//从str2复制n个字符到str1，返回一个指向目标存储区str1的指针。</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>实现xargs：</p>
+<p><code>xargs</code>的作用是把stdin中的数据用空格或回车分割成命令行参数</p>
+<p>例：<code>find .-name &#39;*.py&#39; | xargs cat | wc -l</code> :统计当前目录下所有python文件的总行数</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MIT6.S081</div>
+      <div>http://example.com/2023/03/05/MIT6-S081/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Peng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/14/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/" title="测试文章">
+                        <span class="hidden-mobile">测试文章</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
