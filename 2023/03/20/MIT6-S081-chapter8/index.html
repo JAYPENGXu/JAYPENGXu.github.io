@@ -1,0 +1,773 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Peng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="file system  文件系统的目的是组织和存储数据。 文件系统通常支持在用户和应用程序之间共享数据以及持久性，以便数据在重启后仍然可用。xv6 文件系统提供类 Unix 文件、目录和路径名（参见第 1 章），并将其数据存储在 virtio 磁盘上以实现持久性。 文件系统解决了几个挑战：  文件系统需要磁盘上的数据结构来表示命名目录和文件的树，记录保存每个文件内容的块的身份，并记录磁盘的哪些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6.S081-chapter8">
+<meta property="og:url" content="http://example.com/2023/03/20/MIT6-S081-chapter8/index.html">
+<meta property="og:site_name" content="学习笔记">
+<meta property="og:description" content="file system  文件系统的目的是组织和存储数据。 文件系统通常支持在用户和应用程序之间共享数据以及持久性，以便数据在重启后仍然可用。xv6 文件系统提供类 Unix 文件、目录和路径名（参见第 1 章），并将其数据存储在 virtio 磁盘上以实现持久性。 文件系统解决了几个挑战：  文件系统需要磁盘上的数据结构来表示命名目录和文件的树，记录保存每个文件内容的块的身份，并记录磁盘的哪些">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/03/20/MIT6-S081-chapter8/81.png">
+<meta property="og:image" content="http://example.com/2023/03/20/MIT6-S081-chapter8/82.png">
+<meta property="og:image" content="http://example.com/2023/03/20/MIT6-S081-chapter8/83.png">
+<meta property="article:published_time" content="2023-03-20T11:10:19.000Z">
+<meta property="article:modified_time" content="2023-03-20T11:14:22.287Z">
+<meta property="article:author" content="Peng">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/03/20/MIT6-S081-chapter8/81.png">
+  
+  
+  
+  <title>MIT6.S081-chapter8 - 学习笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"pv6Gdlea1tYTg3XDi99udiLI-MdYXbMMI","app_key":"b4dfQhb4rFEkGvnH6L7spSSZ","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>JAYPENG的学习笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MIT6.S081-chapter8"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-20 19:10" pubdate>
+          2023年3月20日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          20k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          166 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MIT6.S081-chapter8</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ol start="8">
+<li>file system</li>
+</ol>
+<p>文件系统的目的是组织和存储数据。 文件系统通常支持在用户和应用程序之间共享数据以及持久性，以便数据在重启后仍然可用。xv6 文件系统提供类 Unix 文件、目录和路径名（参见第 1 章），并将其数据存储在 virtio 磁盘上以实现持久性。 文件系统解决了几个挑战：</p>
+<ul>
+<li>文件系统需要磁盘上的数据结构来表示命名目录和文件的树，记录保存每个文件内容的块的身份，并记录磁盘的哪些区域是空闲的。</li>
+<li>文件系统必须支持崩溃恢复。 也就是说，如果发生崩溃（例如，电源故障），文件系统必须在重新启动后仍能正常工作。 风险在于崩溃可能会中断一系列更新并留下不一致的磁盘数据结构（例如，一个块既在文件中使用又标记为空闲）。</li>
+<li>不同的进程可能同时对文件系统进行操作，因此文件系统代码必须协调以保持不变量。</li>
+<li>访问磁盘比访问内存慢几个数量级，因此文件系统必须维护流行块的内存缓存。</li>
+</ul>
+<p>8.1 overview</p>
+<p>xv6 文件系统实现分为七层，如图 8.1 所示。 磁盘层在 virtio 硬盘驱动器上读取和写入块。 缓冲区缓存层缓存磁盘块并同步访问它们，确保一次只有一个内核进程可以修改存储在任何特定块中的数据。 日志层允许更高层将更新包装到事务中的多个块，并确保块在面对崩溃时自动更新（即，所有块都被更新或没有）。 inode 层提供单独的文件，每个文件都表示为具有唯一 i-number 的 inode 和一些保存文件数据的块。 目录层将每个目录实现为一种特殊类型的 inode，其内容是一系列目录条目，每个目录条目包含一个文件名和 i-number。 路径名层提供分层路径名，如&#x2F;usr&#x2F;rtm&#x2F;xv6&#x2F;fs.c，并通过递归查找来解析它们。 文件描述符层使用文件系统接口抽象出许多 Unix 资源（例如，管道、设备、文件等），简化了应用程序程序员的工作。</p>
+<img src="/2023/03/20/MIT6-S081-chapter8/81.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+
+<p>磁盘硬件传统上将磁盘上的数据表示为 512 字节块（也称为扇区）的编号序列：扇区 0 是前 512 字节，扇区 1 是下一个，依此类推。 操作系统用于其文件系统的块大小可能与磁盘使用的扇区大小不同，但通常块大小是扇区大小的倍数。 Xv6 在 struct buf (kernel&#x2F;buf.h:1) 类型的对象中保存已读入内存的块的副本。 存储在该结构中的数据有时与磁盘不同步：它可能尚未从磁盘读入（磁盘正在处理它但尚未返回扇区的内容），或者它可能已被更新 软件但尚未写入磁盘。</p>
+<p>文件系统必须有一个在磁盘上存储 inode 和内容块的计划。 为此，xv6 将磁盘分成几个部分，如图 8.2 所示。 文件系统不使用块 0（它包含引导扇区）。 块 1 称为超级块； 它包含有关文件系统的元数据（以块为单位的文件系统大小、数据块数、inode 数和日志中的块数）。 从 2 开始的块保存日志。 日志之后是索引节点，每个块有多个索引节点。 在那些之后是位图块跟踪正在使用的数据块。 其余块为数据块； 每个都在位图块中标记为空闲，或者<br>保存文件或目录的内容。 超级块由一个名为 mkfs 的单独程序填充，该程序构建一个初始文件系统。</p>
+<img src="/2023/03/20/MIT6-S081-chapter8/82.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+
+<p>8.2 buffer cache layer</p>
+<p>缓冲区缓存有两个工作：（1）同步对磁盘块的访问，以确保内存中只有一个块的副本，并且一次只有一个内核线程使用该副本； (2) 缓存流行的块，这样它们就不需要从慢盘中重新读取。 代码在 bio.c 中。<br>buffer cache导出的主要接口由bread和bwrite组成； 前者获得一个包含可在内存中读取或修改的块副本的 buf，后者将修改后的缓冲区写入磁盘上的相应块。 内核线程在使用完缓冲区后必须通过调用 brelse 来释放缓冲区。 缓冲区缓存使用每个缓冲区的睡眠锁来确保一次只有一个线程使用每个缓冲区（以及每个磁盘块）； bread 返回一个锁定的缓冲区，brelse 释放锁。<br>让我们回到缓冲区缓存。 缓冲区缓存有固定数量的缓冲区来保存磁盘块，这意味着如果文件系统请求缓存中不存在的块，缓冲区缓存必须回收当前保存其他块的缓冲区。 缓冲区缓存为新块回收最近最少使用的缓冲区。 假设最近最少使用的缓冲区是最不可能很快再次使用的缓冲区。</p>
+<p>8.3 code: buffer cache</p>
+<p>缓冲区高速缓存是缓冲区的双向链表。 由 main (kernel&#x2F;- main.c:27) 调用的函数 binit 使用静态数组 buf (kernel&#x2F;bio.c:43-52) 中的 NBUF 缓冲区初始化列表。 所有其他对缓冲区缓存的访问都通过 bcache.head 引用链表，而不是 buf 数组。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span><br><span class="hljs-title function_">binit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buf</span> *<span class="hljs-title">b</span>;</span><br><br>  initlock(&amp;bcache.lock, <span class="hljs-string">&quot;bcache&quot;</span>);<br><br>  <span class="hljs-comment">// Create linked list of buffers</span><br>  bcache.head.prev = &amp;bcache.head;<br>  bcache.head.next = &amp;bcache.head;<br>  <span class="hljs-keyword">for</span>(b = bcache.buf; b &lt; bcache.buf+NBUF; b++)&#123;<br>    b-&gt;next = bcache.head.next;<br>    b-&gt;prev = &amp;bcache.head;<br>    initsleeplock(&amp;b-&gt;lock, <span class="hljs-string">&quot;buffer&quot;</span>);<br>    bcache.head.next-&gt;prev = b;<br>    bcache.head.next = b;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>缓冲区有两个与之关联的状态字段。 字段 valid 指示缓冲区包含块的副本。 field disk表示缓冲区内容已经交给<br>磁盘，这可能会改变缓冲区（例如，将数据从磁盘写入数据）。<br>Bread (kernel&#x2F;bio.c:93) 调用 bget 以获取给定扇区 (kernel&#x2F;bio.c:97) 的缓冲区。 如果需要从磁盘读取缓冲区，bread 会在返回缓冲区之前调用 virtio_disk_rw 来执行此操作。<br>Bget (kernel&#x2F;bio.c:59) 扫描缓冲区列表以查找具有给定设备和扇区号 (kernel&#x2F;bio.c:65-73) 的缓冲区。 如果存在这样的缓冲区，则 bget 获取缓冲区的睡眠锁。 然后 Bget 返回锁定的缓冲区。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Return a locked buf with the contents of the indicated block.</span><br><span class="hljs-keyword">struct</span> buf*<br><span class="hljs-title function_">bread</span><span class="hljs-params">(uint dev, uint blockno)</span><br>&#123;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buf</span> *<span class="hljs-title">b</span>;</span><br><br>  b = bget(dev, blockno);<br>  <span class="hljs-keyword">if</span>(!b-&gt;valid) &#123;<br>    virtio_disk_rw(b, <span class="hljs-number">0</span>);<br>    b-&gt;valid = <span class="hljs-number">1</span>;<br>  &#125;<br>  <span class="hljs-keyword">return</span> b;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果给定扇区没有缓存缓冲区，则 bget 必须创建一个，可能会重新使用包含不同扇区的缓冲区。它第二次扫描缓冲区列表，寻找未使用的缓冲区 (b-&gt;refcnt &#x3D; 0)； 可以使用任何此类缓冲区。 Bget 编辑缓冲区元数据以记录新设备和扇区号并获取其睡眠锁。 请注意，赋值 b-&gt;valid &#x3D; 0 确保 bread 将从磁盘读取块数据，而不是错误地使用缓冲区的先前内容。</p>
+<p>重要的是每个磁盘扇区最多有一个缓存缓冲区，以确保读者看到写入，并且因为文件系统使用缓冲区上的锁来进行同步。</p>
+<p>Bget 通过从第一个循环检查块是否被缓存到第二个循环声明块现在被缓存（通过设置 dev、blockno 和refcnt）连续持有 bache.lock 来确保这种不变性。 这导致检查块的存在和（如果不存在）缓冲区的指定以保持块是原子的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Look through buffer cache for block on device dev.</span><br><span class="hljs-comment">// If not found, allocate a buffer.</span><br><span class="hljs-comment">// In either case, return locked buffer.</span><br><span class="hljs-type">static</span> <span class="hljs-keyword">struct</span> buf*<br><span class="hljs-title function_">bget</span><span class="hljs-params">(uint dev, uint blockno)</span><br>&#123;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buf</span> *<span class="hljs-title">b</span>;</span><br><br>  acquire(&amp;bcache.lock);<br><br>  <span class="hljs-comment">// Is the block already cached?</span><br>  <span class="hljs-keyword">for</span>(b = bcache.head.next; b != &amp;bcache.head; b = b-&gt;next)&#123;<br>    <span class="hljs-keyword">if</span>(b-&gt;dev == dev &amp;&amp; b-&gt;blockno == blockno)&#123;<br>      b-&gt;refcnt++;<br>      release(&amp;bcache.lock);<br>      acquiresleep(&amp;b-&gt;lock);<br>      <span class="hljs-keyword">return</span> b;<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-comment">// Not cached.</span><br>  <span class="hljs-comment">// Recycle the least recently used (LRU) unused buffer.</span><br>  <span class="hljs-keyword">for</span>(b = bcache.head.prev; b != &amp;bcache.head; b = b-&gt;prev)&#123;<br>    <span class="hljs-keyword">if</span>(b-&gt;refcnt == <span class="hljs-number">0</span>) &#123;<br>      b-&gt;dev = dev;<br>      b-&gt;blockno = blockno;<br>      b-&gt;valid = <span class="hljs-number">0</span>;<br>      b-&gt;refcnt = <span class="hljs-number">1</span>;<br>      release(&amp;bcache.lock);<br>      acquiresleep(&amp;b-&gt;lock);<br>      <span class="hljs-keyword">return</span> b;<br>    &#125;<br>  &#125;<br>  panic(<span class="hljs-string">&quot;bget: no buffers&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>bget 在 bcache.lock 关键部分之外获取缓冲区的睡眠锁是安全的，因为非零 b-&gt;refcnt 防止缓冲区被重新用于不同的磁盘块。 睡眠锁保护块缓冲内容的读写，而bcache.lock 保护有关哪些块被缓存的信息。<br>如果所有的缓冲区都忙，那么太多进程同时执行文件系统调用； 恐慌。 一个更优雅的响应可能是休眠直到缓冲区空闲，尽管这样可能会出现死锁。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Write b&#x27;s contents to disk.  Must be locked.</span><br><span class="hljs-type">void</span><br><span class="hljs-title function_">bwrite</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> buf *b)</span><br>&#123;<br>  <span class="hljs-keyword">if</span>(!holdingsleep(&amp;b-&gt;lock))<br>    panic(<span class="hljs-string">&quot;bwrite&quot;</span>);<br>  virtio_disk_rw(b, <span class="hljs-number">1</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>一旦 bread 读取了磁盘（如果需要）并将缓冲区返回给它的调用者，调用者就可以独占使用缓冲区并且可以读取或写入数据字节。 如果调用者确实修改了缓冲区，它必须在释放缓冲区之前调用 bwrite 将更改的数据写入磁盘。 写入(kernel&#x2F;bio.c:107) 调用 virtio_disk_rw 与磁盘硬件对话。<br>当调用者用完一个缓冲区时，它必须调用 brelse 来释放它。 （名称 brelse 是 b-release 的缩写，含糊不清但值得学习：它起源于 Unix，也用于 BSD、Linux 和 Solaris。）Brelse (kernel&#x2F;bio.c:117) 释放睡眠锁 并将缓冲区移动到链表的前面 (kernel&#x2F;bio.c:128-133)。 移动缓冲区会导致列表按最近使用缓冲区的时间（意味着已释放）排序：列表中的第一个缓冲区是最近使用的，最后一个是最近最少使用的。 bget 中的两个循环利用了这一点：扫描现有缓冲区必须在最坏的情况下处理整个列表，但首先检查最近使用的缓冲区（从 bcache.head 开始并跟随下一个指针）将减少扫描时间 有很好的参考资料。 选择缓冲区以重用的扫描通过向后扫描（跟随 prev 指针）选择最近最少使用的缓冲区。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Release a locked buffer.</span><br><span class="hljs-comment">// Move to the head of the most-recently-used list.</span><br><span class="hljs-type">void</span><br><span class="hljs-title function_">brelse</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> buf *b)</span><br>&#123;<br>  <span class="hljs-keyword">if</span>(!holdingsleep(&amp;b-&gt;lock))<br>    panic(<span class="hljs-string">&quot;brelse&quot;</span>);<br><br>  releasesleep(&amp;b-&gt;lock);<br><br>  acquire(&amp;bcache.lock);<br>  b-&gt;refcnt--;<br>  <span class="hljs-keyword">if</span> (b-&gt;refcnt == <span class="hljs-number">0</span>) &#123;<br>    <span class="hljs-comment">// no one is waiting for it.</span><br>    b-&gt;next-&gt;prev = b-&gt;prev;<br>    b-&gt;prev-&gt;next = b-&gt;next;<br>    b-&gt;next = bcache.head.next;<br>    b-&gt;prev = &amp;bcache.head;<br>    bcache.head.next-&gt;prev = b;<br>    bcache.head.next = b;<br>  &#125;<br>  <br>  release(&amp;bcache.lock);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>8.4 logging layer</p>
+<p>文件系统设计中最有趣的问题之一是崩溃恢复。 问题的出现是因为许多文件系统操作涉及对磁盘的多次写入，并且在一部分写入后崩溃可能会使磁盘上的文件系统处于不一致的状态。 例如，假设在文件截断期间发生崩溃（将文件的长度设置为零并释放其内容块）。 根据磁盘写入的顺序，崩溃可能会留下一个索引节点引用标记为空闲的内容块，或者它可能会留下一个已分配但未引用的内容块。</p>
+<p>后者相对良性，但引用释放块的 inode 很可能在重启后导致严重问题。 重启后，内核可能会将该块分配给另一个文件，现在我们有两个不同的文件无意中指向同一个块。 如果 xv6 支持多用户，这种情况可能是一个安全问题，因为旧文件的所有者将能够读取和写入新文件中的块，新文件由不同的用户拥有。</p>
+<p>xv6 使用简单的日志记录形式解决了文件系统操作期间的崩溃问题。 xv6 系统调用不直接写入磁盘文件系统数据结构。 相反，它会在磁盘上的日志中放置它希望进行的所有磁盘写入的描述。 一旦系统调用记录了它的所有写入，它就会向磁盘写入一条特殊的提交记录，表明该日志包含一个完整的操作。 那时系统调用将写入复制到磁盘文件系统数据结构。 这些写入完成后，系统调用将擦除磁盘上的日志。</p>
+<p>如果系统崩溃并重新启动，文件系统代码会在运行任何进程之前按如下方式从崩溃中恢复。 如果日志被标记为包含一个完整的操作，那么恢复代码会将写入复制到磁盘文件系统中它们所属的位置。 如果日志未标记为包含完整操作，恢复代码将忽略该日志。 恢复代码通过擦除日志完成。</p>
+<p>为什么xv6的log解决文件系统操作时崩溃的问题？ 如果崩溃发生在操作提交之前，那么磁盘上的日志将不会被标记为完整，恢复代码将忽略它，磁盘的状态就好像操作还没有开始一样。 如果崩溃发生在操作提交之后，那么恢复将重放操作的所有写入，如果操作已经开始将它们写入磁盘数据结构，则可能会重复它们。 在任何一种情况下，日志都使操作相对于崩溃具有原子性：恢复后，所有操作的写入都出现在磁盘上，或者都不出现。</p>
+<p>8.5 log design</p>
+<p>日志驻留在已知的固定位置，在超级块中指定。 它由一个标头块和一系列更新的块副本（“记录的块”）组成。 标头块包含一组扇区号，每个记录块一个，以及日志块的计数。 磁盘头块中的计数为零，表示日志中没有事务，或者为非零，表示日志包含一个完整的已提交事务，并具有指定数量的记录块。 Xv6 在事务提交时写入标头块，而不是之前，并在将记录的块复制到文件系统后将计数设置为零。 因此，交易中途的崩溃将导致日志头块中的计数为零； 提交后的崩溃将导致非零计数。<br>每个系统调用的代码都指示写入序列的开始和结束，这些写入序列对于崩溃而言必须是原子的。 为了允许不同进程并发执行文件系统操作，日志系统可以将多个系统调用的写入累积到一个事务中。 因此，单个提交可能涉及多个完整系统调用的写入。 为了避免跨事务拆分系统调用，日志系统仅在没有文件系统调用正在进行时才提交。</p>
+<p>一起提交多个事务的想法称为组提交。组提交减少了磁盘操作的数量，因为它将一次提交的固定成本分摊到多个操作中。 组提交还同时为磁盘系统提供更多并发写入，也许允许磁盘在单个磁盘旋转期间将它们全部写入。 xv6 的 virtio 驱动不支持这种批处理，但 xv6 的文件系统设计允许。</p>
+<p>xv6 在磁盘上专门分配了固定数量的空间来保存日志。 事务中系统调用写入的块总数必须适合该空间。 这有两个后果。不允许单个系统调用写入比日志中的空间更多的不同块。 对于大多数系统调用来说这不是问题，但是其中两个可能会写入许多块：write 和 unlink。一次大文件写入可能会写入很多数据块和很多位图块以及一个inode块； 取消链接一个大文件可能会写入许多位图块和一个索引节点。 Xv6 的 write 系统调用将大型写入分解为适合日志的多个较小的写入，并取消链接不会引起问题，因为实际上 xv6 文件系统只使用一个位图块。 日志空间有限的另一个后果是日志系统不允许系统调用启动，除非可以确定系统调用的写入将适合日志中剩余的空间。</p>
+<p>8.6 code : logging</p>
+<p>系统调用中日志的典型用法如下所示：begin_op (kernel&#x2F;log.c:127) 等待直到日志系统当前未提交，并且直到有足够的未保留日志空间来保存来自该调用的写入。 log.outstanding 统计已保留日志空间的系统调用数； 总保留空间是 log.outstanding 乘以 MAXOPBLOCKS。 增加 log.outstanding 既可以保留空间又可以防止在此系统调用期间发生提交。 代码保守地假设每个系统调用最多可以写入 MAXOPBLOCKS 个不同的块.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">begin_op();<br>...<br>bp = bread(...);<br>bp -&gt; data[...] = ...;<br>log_write(bp);<br>...<br>end_op();<br></code></pre></td></tr></table></figure>
+
+<p>系统调用中日志的典型用法如下所示：begin_op (kernel&#x2F;log.c:127) 等待直到日志系统当前未提交，并且直到有足够的未保留日志空间来保存来自该调用的写入。 log.outstanding 统计已保留日志空间的系统调用数； 总保留空间是 log.outstanding 乘以 MAXOPBLOCKS。 增加 log.outstanding 既可以保留空间又可以防止在此系统调用期间发生提交。 代码保守地假设每个系统调用最多可以写入 MAXOPBLOCKS 个不同的块</p>
+<p>log_write (kernel&#x2F;log.c:215) 充当 bwrite 的代理。 它在内存中记录块的扇区号，在磁盘上的日志中为其保留一个槽，并将缓冲区固定在块缓存中以防止块缓存将其驱逐。 该块必须保留在缓存中直到提交：在此之前，缓存的副本是修改的唯一记录； 在提交之后才能将其写入磁盘上的位置； 并且同一事务中的其他读取必须看到修改。 log_write 通知当一个块在单个事务中被多次写入时，并在日志中为该块分配相同的槽。 这种优化通常称为吸收。 例如，包含多个文件的 inode 的磁盘块在一个事务中被多次写入是很常见的。 通过将多个磁盘写入合并为一个，文件系统可以节省日志空间并可以获得更好的性能，因为只需要将磁盘块的一个副本写入磁盘。</p>
+<p>end_op (kernel&#x2F;log.c:147) 首先减少未完成的系统调用的计数。 如果计数现在为零，它会通过调用 commit() 来提交当前事务。 这个过程有四个阶段。 write_log() (kernel&#x2F;log.c:179) 将事务中修改的每个块从缓冲区缓存复制到磁盘日志中的槽。 write_head() (kernel&#x2F;log.c:103) 将头块写入磁盘：这是提交点，写入后崩溃将导致恢复从日志中重放事务的写入。 install_trans (kernel&#x2F;log.c:69) 从日志中读取每个块并将其写入文件系统中的适当位置。 最后 end_op 写入计数为零的日志头； 这必须在下一个事务开始写入记录块之前发生，这样崩溃就不会导致使用一个事务的标头和后续事务的标头进行恢复记录块。</p>
+<p>recover_from_log (kernel&#x2F;log.c:117) 从 initlog (kernel&#x2F;log.c:55) 调用，它在第一个用户进程运行之前从 fsinit(kernel&#x2F;fs.c:42) 调用 (kernel&#x2F;proc .c:520）。 它读取日志标头，并在标头指示日志包含已提交的事务时模仿 end_op 的操作。</p>
+<p>日志的使用示例发生在文件写入 (kernel&#x2F;file.c:135) 中。 交易看起来像这样：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">begin_op();<br>ilock(f -&gt; ip);<br>r = writei(f -&gt; ip, ...);<br>iunlock(f -&gt; ip);<br>end_op();<br></code></pre></td></tr></table></figure>
+
+<p>此代码包含在一个循环中，该循环一次将大量写入分解为仅几个扇区的单个事务，以避免日志溢出。作为此事务的一部分，对 writei 的调用写入许多块：文件的索引节点、一个或多个位图块以及一些数据块。</p>
+<p>8.7 code : block allocator</p>
+<p>文件和目录内容存储在磁盘块中，磁盘块必须从空闲池中分配。 Xv6 的块分配器在磁盘上维护一个空闲位图，每个块一个位。 零位表示相应的块是免费的； 一位表示它正在使用中。 程序 mkfs 设置与引导扇区、超级块、日志块、inode 块和位图块对应的位。</p>
+<p>块分配器提供两个功能：balloc 分配一个新的磁盘块，bfree 释放一个块。 Balloc 在 (kernel&#x2F;fs.c:71) 处的 balloc 循环考虑每个块，从块 0 开始直到 sb.size，文件系统中的块数。 它寻找位图位为零的块，表示它是空闲的。 如果 balloc 找到这样的块，它会更新位图并返回该块。 为了提高效率，循环被分成两部分。 外循环读取每个位图位块。 内部循环检查单个位图块中的所有每块位数 (BPB) 位。 如果两个进程试图同时分配一个块，则可能发生的竞争被缓冲区缓存一次只允许一个进程使用任何一个位图块这一事实所阻止。</p>
+<p>Bfree (kernel&#x2F;fs.c:90) 找到正确的位图块并清除正确的位。 bread 和 brelse 隐含的独占使用再次避免了显式锁定的需要。<br>与本章其余部分描述的大部分代码一样，balloc 和 bfree 必须在事务内部调用。</p>
+<p>8.8 inode layer</p>
+<p>术语 inode 可以具有两个相关含义之一。 它可能指的是包含文件大小和数据块编号列表的磁盘数据结构。 或者“inode”可能指的是内存中的 inode，它包含磁盘 inode 的副本以及内核所需的额外信息。</p>
+<p>磁盘上的 inode 被打包到称为 inode 块的连续磁盘区域中。 每个 inode 的大小都相同，因此给定一个数字 n 很容易找到磁盘上的第 n 个 inode。 事实上，这个数字 n，称为 inode 编号或 i-number，是在实现中识别 inode 的方式。<br>磁盘 inode 由 struct dinode (kernel&#x2F;fs.h:32) 定义。 类型字段区分文件、目录和特殊文件（设备）。 零类型表示磁盘上的 inode 是空闲的。 nlink 字段计算引用此 inode 的目录条目的数量，以便识别何时应释放磁盘上的 inode 及其数据块。 大小字段记录了文件中内容的字节数。 addrs数组记录了块号保存文件内容的磁盘块。<br>内核将活动 inode 的集合保存在内存中一个名为 itable 的表中； struct inode (kernel&#x2F;file.h:17) 是磁盘上 struct dinode 的内存副本。 仅当有 C 指针指向该 inode 时，内核才会将 inode 存储在内存中。 ref 字段计算引用内存中 inode 的 C 指针的数量，如果引用计数降为零，内核将从内存中丢弃 inode。 iget 和 iput 函数获取和释放指向 inode 的指针，修改引用计数。 指向 inode 的指针可以来自文件描述符、当前工作目录和临时内核代码（如 exec）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dinode</span> &#123;</span><br>  <span class="hljs-type">short</span> type;           <span class="hljs-comment">// File type</span><br>  <span class="hljs-type">short</span> major;          <span class="hljs-comment">// Major device number (T_DEVICE only)</span><br>  <span class="hljs-type">short</span> minor;          <span class="hljs-comment">// Minor device number (T_DEVICE only)</span><br>  <span class="hljs-type">short</span> nlink;          <span class="hljs-comment">// Number of links to inode in file system</span><br>  uint size;            <span class="hljs-comment">// Size of file (bytes)</span><br>  uint addrs[NDIRECT+<span class="hljs-number">1</span>];   <span class="hljs-comment">// Data block addresses</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>xv6 的 inode 代码中有四种锁或类锁机制。itable.lock 保护一个 inode 最多出现在 inode 表中一次的不变量，以及一个 inmemory inode 的 ref 字段计算指向 inode 的内存指针的数量的不变量。每个内存中的 inode 都有一个包含睡眠锁的锁定字段，它确保对 inode 的字段（例如文件长度）以及 inode 的文件或目录内容块的独占访问。 一个 inode 的 ref，如果它大于零，会导致系统在表中维护 inode，而不是为不同的 inode 重新使用表条目。 最后，每个 inode 包含一个 nlink 字段（在磁盘上，如果在内存中则复制到内存中），用于计算引用文件的目录条目的数量； 如果 inode 的链接数大于零，xv6 将不会释放它。<br>iget() 返回的 struct inode 指针在对应的 iput() 调用之前保证有效； inode 不会被删除，指针指向的内存也不会被其他 inode 重新使用。 iget() 提供对一个 inode 的非独占访问，因此可以有多个指向同一个 inode 的指针。 文件系统代码的许多部分都依赖于 iget() 的这种行为，既可以保持对索引节点（如打开的文件和当前目录）的长期引用，又可以防止竞争，同时避免操作多个索引节点（例如路径名）的代码中出现死锁）。</p>
+<p>iget 返回的 struct inode 可能没有任何有用的内容。 为了确保它拥有磁盘 inode 的副本，代码必须调用 ilock。 这将锁定索引节点（以便其他进程无法锁定它）并从磁盘读取索引节点（如果尚未读取）。iunlock 释放 inode 上的锁。 将 inode 指针的获取与锁定分开有助于在某些情况下避免死锁，例如在目录查找期间。 多个进程可以持有一个指向 iget 返回的 inode 的 C 指针，但一次只有一个进程可以锁定 inode。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// in-memory copy of an inode</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">inode</span> &#123;</span><br>  uint dev;           <span class="hljs-comment">// Device number</span><br>  uint inum;          <span class="hljs-comment">// Inode number</span><br>  <span class="hljs-type">int</span> ref;            <span class="hljs-comment">// Reference count</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sleeplock</span> <span class="hljs-title">lock</span>;</span> <span class="hljs-comment">// protects everything below here</span><br>  <span class="hljs-type">int</span> valid;          <span class="hljs-comment">// inode has been read from disk?</span><br><br>  <span class="hljs-type">short</span> type;         <span class="hljs-comment">// copy of disk inode</span><br>  <span class="hljs-type">short</span> major;<br>  <span class="hljs-type">short</span> minor;<br>  <span class="hljs-type">short</span> nlink;<br>  uint size;<br>  uint addrs[NDIRECT+<span class="hljs-number">1</span>];<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>inode 表仅存储内核代码或数据结构持有 C 指针的 inode。 它的主要工作是同步多个进程的访问。 inode表也恰好缓存了常用的inode，但缓存是次要的； 如果一个 inode 被频繁使用，buffer cache 可能会将它保存在内存中。 修改内存中 inode 的代码使用 iupdate 将其写入磁盘。</p>
+<p>8.10 code: inode content</p>
+<p>磁盘上的 inode 结构 struct dinode 包含一个大小和一个块号数组（见图 8.3）。inode 数据位于 dinode 的地址数组中列出的块中。 第一个 NDIRECT 数据块列在数组的第一个 NDIRECT 条目中； 这些块称为直接块。 下一个 NINDIRECT 数据块不在 inode 中列出，而是在称为间接块的数据块中列出。 addrs 数组中的最后一项给出了间接块的地址。<br>因此，文件的前 12 kB ( NDIRECT x BSIZE) 字节可以从 inode 中列出的块加载，而接下来的 256 kB ( NINDIRECT x BSIZE) 字节只能在查询间接块后加载。 这是一个很好的磁盘表示，但对客户端来说是一个复杂的表示。 函数 bmap 管理表示，以便更高级别的例程，例如我们将很快看到的 readi 和 writei，不需要管理这种复杂性。 Bmap 返回 inode ip 的第 bn 个数据块的磁盘块号。 如果 ip 还没有这样的块，bmap 会分配一个。</p>
+<img src="/2023/03/20/MIT6-S081-chapter8/83.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+
+<p>函数 bmap (kernel&#x2F;fs.c:378) 首先选择简单的情况：第一个 NDIRECT 块列在 inode 本身 (kernel&#x2F;fs.c:383-387) 中。 接下来的 NINDIRECT 块列在 ip-&gt;addrs[NDIRECT] 的间接块中。 bmap 读取间接块 (kernel&#x2F;fs.c:394)，然后从块内的正确位置读取块号 (kernel&#x2F;fs.c:395)。 如果块号超过NDIRECT+NINDIRECT，bmap panic； writei 包含防止这种情况发生的检查 (kernel&#x2F;fs.c:494)。</p>
+<p>bmap 根据需要分配块。 ip-&gt;addrs[] 或零间接条目表示没有分配块。 当 bmap 遇到零时，它会用新块的数量替换它们，按需分配 (kernel&#x2F;fs.c:384-385) (kernel&#x2F;fs.c:392-393)。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Return the disk block address of the nth block in inode ip.</span><br><span class="hljs-comment">// If there is no such block, bmap allocates one.</span><br><span class="hljs-type">static</span> uint<br><span class="hljs-title function_">bmap</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *ip, uint bn)</span><br>&#123;<br>  uint addr, *a;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buf</span> *<span class="hljs-title">bp</span>;</span><br><br>  <span class="hljs-keyword">if</span>(bn &lt; NDIRECT)&#123;<br>    <span class="hljs-keyword">if</span>((addr = ip-&gt;addrs[bn]) == <span class="hljs-number">0</span>)<br>      ip-&gt;addrs[bn] = addr = balloc(ip-&gt;dev);<br>    <span class="hljs-keyword">return</span> addr;<br>  &#125;<br>  bn -= NDIRECT;<br><br>  <span class="hljs-keyword">if</span>(bn &lt; NINDIRECT)&#123;<br>    <span class="hljs-comment">// Load indirect block, allocating if necessary.</span><br>    <span class="hljs-keyword">if</span>((addr = ip-&gt;addrs[NDIRECT]) == <span class="hljs-number">0</span>)<br>      ip-&gt;addrs[NDIRECT] = addr = balloc(ip-&gt;dev);<br>    bp = bread(ip-&gt;dev, addr);<br>    a = (uint*)bp-&gt;data;<br>    <span class="hljs-keyword">if</span>((addr = a[bn]) == <span class="hljs-number">0</span>)&#123;<br>      a[bn] = addr = balloc(ip-&gt;dev);<br>      log_write(bp);<br>    &#125;<br>    brelse(bp);<br>    <span class="hljs-keyword">return</span> addr;<br>  &#125;<br><br>  panic(<span class="hljs-string">&quot;bmap: out of range&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>itrunc 释放文件的块，将 inode 的大小重置为零。 Itrunc (kernel&#x2F;fs.c:410) 首先释放直接块 (kernel&#x2F;fs.c:416-421)，然后是间接块中列出的块 (kernel&#x2F;fs.c:426-429)，最后 间接块本身 (kernel&#x2F;fs.c:431-432)。</p>
+<p>bmap 使 readi 和 writei 可以很容易地获取 inode 的数据。 readi (kernel&#x2F;fs.c:456) 首先确保偏移量和计数不超出文件末尾。 从文件末尾开始的读取返回错误 (kernel&#x2F;fs.c:461-462)，而从文件末尾开始或越过文件末尾的读取返回的字节数少于请求的字节数 (kernel&#x2F;fs.c:463-464) ). 主循环处理文件的每个块，将数据从缓冲区复制到 dst (kernel&#x2F;fs.c:466-475)。 writei (kernel&#x2F;fs.c:487) 与 readi 相同，但有三个例外：从文件末尾开始或越过文件末尾的写入会增大文件，直至达到最大文件大小 (kernel&#x2F;fs.c:494-495) ; 循环将数据复制到缓冲区而不是 out (kernel&#x2F;fs.c:36)； 如果写入扩展了文件，writei 必须更新它的大小。</p>
+<p>readi 和 writei 都从检查 ip-&gt;type &#x3D;&#x3D; T_DEV 开始。 这种情况处理数据不在文件系统中的特殊设备； 我们将在文件描述符层中返回到这种情况。</p>
+<p>函数 stati (kernel&#x2F;fs.c:442) 将 inode 元数据复制到 stat 结构中，该结构通过 stat 系统调用公开给用户程序。</p>
+<p>8.11 code : directory layer</p>
+<p>目录在内部实现很像文件。 它的 inode 类型为 T_DIR，它的数据是一系列目录条目。 每个条目都是一个 struct dirent (kernel&#x2F;fs.h:56)，其中包含一个名称和一个 inode 编号。 名称最多为 DIRSIZ (14) 个字符； 如果更短，则以 NUL (0) 字节结束。 索引节点号为零的目录条目是免费的。</p>
+<p>函数 dirlookup (kernel&#x2F;fs.c:530) 在目录中搜索具有给定名称的条目。<br>如果它找到一个，它返回一个指向相应 inode 的指针，解锁，并将 *poff 设置为目录中条目的字节偏移量，以防调用者希望编辑它。 如果 dirlookup 找到具有正确名称的条目，它会更新 *poff 并返回通过 iget 获得的未锁定 inode。<br>Dirlookup 是 iget 返回未锁定 inode 的原因。 调用者已锁定 dp，因此如果查找是针对当前目录的别名 .，则在返回之前尝试锁定 inode 将尝试重新锁定 dp 和死锁。 （还有更复杂的死锁场景，涉及多个进程和 ..，父目录的别名； . 不是唯一的问题。）调用者可以解锁 dp，然后锁定 ip，确保它一次只持有一个锁。</p>
+<p>函数 dirlink (kernel&#x2F;fs.c:557) 将具有给定名称和 inode 编号的新目录条目写入目录 dp。 如果该名称已存在，dirlink 将返回错误 (kernel&#x2F;fs.c:563-567)。 主循环读取目录条目以查找未分配的条目。 当它找到一个时，它会提前停止循环（kernel&#x2F;fs.c:541-542），并将 off 设置为可用条目的偏移量。 否则，循环以 off 设置为 dp-&gt;size 结束。 无论哪种方式，dirlink 然后通过在偏移量处写入 (kernel&#x2F;fs.c:577-580) 来向目录添加一个新条目。</p>
+<p>8.12 code: path names</p>
+<p>路径名称查找涉及对 dirlookup 的一系列调用，每个路径组件调用一次。<br>Namei (kernel&#x2F;fs.c:664) 评估路径并返回相应的 inode。 函数 nameiparent 是一个变体：它在最后一个元素之前停止，返回父目录的 inode 并将最后一个元素复制到 name 中。 两者都调用广义函数 namex 来完成实际工作。</p>
+<p>Namex (kernel&#x2F;fs.c:629) 首先决定路径评估从哪里开始。 如果路径以斜杠开头，则计算从根开始； 否则，从当前目录开始计算 (kernel&#x2F;fs.c:633-636)。<br>然后它使用 skipelem 依次考虑路径的每个元素 (kernel&#x2F;fs.c:638)。 循环的每次迭代都必须在当前 inode ip 中查找名称。 迭代从锁定 ip 并检查它是否是一个目录开始。 如果不是，则查找失败 (kernel&#x2F;fs.c:639-643)。 （锁定 ip 是必要的，不是因为 ip-&gt;type 可以在脚下改变——它不能——而是因为在 ilock 运行之前，不能保证 ip-&gt;type 已经从磁盘加载。）如果调用是 nameiparent 并且这是 最后一个路径元素，循环提前停止，按照 nameiparent 的定义； 最终的路径元素已经被复制到 name 中，所以 namex 只需要返回解锁的 ip (kernel&#x2F;fs.c:644-648)。<br>最后，循环使用 dirlookup 查找路径元素，并通过设置 ip &#x3D; next (kernel&#x2F;fs.c:649-654) 为下一次迭代做准备。 当循环用完路径元素时，它返回 ip。</p>
+<p>过程 namex 可能需要很长时间才能完成：它可能涉及多个磁盘操作来读取路径名中遍历的目录的 inode 和目录块（如果它们不在缓冲区缓存中）。 Xv6 经过精心设计，因此如果一个内核线程对 namex 的调用在磁盘 I&#x2F;O 上被阻塞，则另一个内核线程查找不同的路径名可以并发进行。 Namex 分别锁定路径中的每个目录，以便可以并行进行不同目录中的查找。</p>
+<p>这种并发性带来了一些挑战。 例如，当一个内核线程正在查找路径名时，另一个内核线程可能正在通过取消链接目录来更改目录树。<br>一个潜在的风险是查找可能正在搜索已被另一个内核线程删除的目录，并且其块已被重新用于另一个目录或文件。<br>xv6 避免了这样的竞争。 例如，在 namex 中执行 dirlookup 时，查找线程持有目录锁，dirlookup 返回一个使用 iget 获得的 inode。<br>iget 增加 inode 的引用计数。 只有从 dirlookup 接收到 inode 后，namex 才会释放对目录的锁定。 现在另一个线程可能会取消索引节点与目录的链接，但 xv6 不会删除索引节点，因为索引节点的引用计数仍然大于零。<br>另一个风险是死锁。 例如next在查找“.”时指向与ip相同的inode。 在释放对 ip 的锁定之前锁定 next 将导致死锁。 为避免此死锁，namex 在获取下一个锁之前解锁目录。 在这里我们再次看到为什么 iget 和 ilock 之间的分离很重要。</p>
+<p>8.13 file descriptor layer</p>
+<p>Unix 界面的一个很酷的方面是 Unix 中的大多数资源都表示为文件，包括控制台、管道等设备，当然还有真实的文件。 文件描述符层是实现这种一致性的层。<br>正如我们在第 1 章中看到的，xv6 为每个进程提供了自己的打开文件表或文件描述符。<br>每个打开的文件都由一个结构文件 (kernel&#x2F;file.h:1) 表示，它是一个 inode 或管道的包装器，加上一个 I&#x2F;O 偏移量。 每次调用 open 都会创建一个新的打开文件（一个新的结构文件）：如果多个进程独立打开同一个文件，不同的实例将具有不同的 I&#x2F;O 偏移量。 另一方面，一个打开的文件（同一个文件结构）可以在一个进程的文件表中出现多次，也可以在多个进程的文件表中出现。 如果一个进程使用 open 打开文件，然后使用 dup 创建别名或使用 fork 与子进程共享，就会发生这种情况。 引用计数跟踪对特定打开文件的引用数。 文件可以打开以供读取或写入或两者兼而有之。 可读和可写字段跟踪这一点。</p>
+<p>系统中所有打开的文件都保存在一个全局文件表 ftable 中。 文件表有分配文件（filealloc）、创建重复引用（filedup）、释放引用（fileclose）、读写数据（fileread和filewrite）等函数。<br>前三个遵循现在熟悉的形式。 Filealloc (kernel&#x2F;file.c:30) 扫描文件表寻找一个未被引用的文件（f-&gt;ref &#x3D;&#x3D; 0）并返回一个新的引用； filedup (kernel&#x2F;file.c:48) 增加引用计数； 和 fileclose (kernel&#x2F;file.c:60) 递减它。 当文件的引用计数达到零时，fileclose 根据类型释放底层管道或 inode。<br>函数filestat、fileread和filewrite实现了对文件的stat、read和write操作。 Filestat (kernel&#x2F;file.c:88) 只允许在 inode 上调用 stati。 Fileread 和 filewrite 检查打开模式是否允许该操作，然后将调用传递给管道或 inode 实现。 如果文件表示一个 inode，fileread 和 filewrite 使用 I&#x2F;O 偏移量作为操作的偏移量，然后将其推进 (kernel&#x2F;file.c:122-123) (kernel&#x2F;file.c:153-154)。 管道没有偏移的概念。 回想一下，inode 函数要求调用者处理锁定 (kernel&#x2F;file.c:94-96) (kernel&#x2F;file.c:121-124) (kernel&#x2F;file.c:163-166)。 inode 锁定有一个方便的副作用，即读写偏移量是自动更新的，因此同时对同一文件的多次写入不会覆盖彼此的数据，尽管它们的写入可能会交错结束。</p>
+<p>8.14 code : sytem calls</p>
+<p>使用较低层提供的功能，大多数系统调用的实现都是微不足道的（参见（kernel&#x2F;sysfile.c））。 有一些call值得仔细研究。<br>函数 sys_link 和 sys_unlink 编辑目录，创建或删除对 inode 的引用。 它们是使用事务的强大功能的另一个很好的例子。 Sys_link (kernel&#x2F;sysfile.c:120) 首先获取它的参数，两个字符串旧的和新的 (kernel&#x2F;sysfile.c:125)。 假设 old 存在并且不是目录 (kernel&#x2F;sysfile.c:129-132)，sys_link 增加其 ip-&gt;nlink 计数。 然后 sys_link 调用 nameiparent 找到 new (kernel&#x2F;sysfile.c:145) 的父目录和最终路径元素，并创建一个指向 old 的 inode (kernel&#x2F;sysfile.c:148) 的新目录条目。 新的父目录必须存在并且与现有 inode 位于同一设备上：inode 编号仅在单个磁盘上具有唯一含义。 如果出现这样的错误，sys_link 必须返回并递减 ip-&gt;nlink。<br>事务简化了实现，因为它需要更新多个磁盘块，但我们不必担心执行它们的顺序。 他们要么全部成功，要么全无。 例如，在没有事务的情况下，在创建链接之前更新 ip-&gt;nlink 会使文件系统暂时处于不安全状态，其间的崩溃可能会导致严重破坏。 有了交易，我们就不必担心这个了。</p>
+<p>Sys_link 为现有 inode 创建一个新名称。 函数 create (kernel&#x2F;sysfile.c:242) 为新 inode 创建一个新名称。 它是三个文件创建系统调用的概括：用 O_CREATE 标志打开创建一个新的普通文件，mkdir 创建一个新目录，mkdev 创建一个新的设备文件。 和sys_link一样，create开始时调用nameiparent获取父目录的inode。 然后它调用 dirlookup 来检查名称是否已经存在 (kernel&#x2F;sysfile.c:252)。 如果名称确实存在，则 create 的行为取决于它被用于哪个系统调用：open 与 mkdir 和 mkdev 具有不同的语义。 如果 create 代表 open (type &#x3D;&#x3D; T_FILE) 使用并且存在的名称本身就是一个常规文件，则 open 将其视为成功，因此 create 也是如此 (kernel&#x2F;sysfile.c:256)。 否则，它是一个错误 (kernel&#x2F;sysfile.c:257-258)。 如果该名称尚不存在，则 create 现在会使用 ialloc (kernel&#x2F;sysfile.c:261) 分配一个新的 inode。 如果新 inode 是一个目录，create 会用 . 和 .. 条目。 最后，现在数据已正确初始化，create 可以将其链接到父目录 (kernel&#x2F;sysfile.c:274)。 create和sys_link一样，同时持有两个inode锁：ip和dp。 没有死锁的可能，因为 inode ip 是新分配的：系统中没有其他进程会持有 ip 的锁然后尝试锁定 dp。</p>
+<p>使用create，很容易实现sys_open、sys_mkdir、sys_mknod。 sys_open (kernel&#x2F;sysfile.c:287) 是最复杂的，因为创建一个新文件只是它能做的一小部分。 如果 open 传递了 O_CREATE 标志，它会调用 create (kernel&#x2F;sysfile.c:301)。 否则，它调用 namei (kernel&#x2F;sysfile.c:307)。 Create 返回一个锁定的 inode，但 namei 没有，所以 sys_open必须锁定 inode 本身。 这提供了一个方便的地方来检查目录是否只打开用于读取，而不是用于写入。 假设 inode 是通过某种方式获得的，sys_open 分配一个文件和一个文件描述符 (kernel&#x2F;sysfile.c:325)，然后填充文件 (kernel&#x2F;sysfile.c:337-342)。 请注意，没有其他进程可以访问部分初始化的文件，因为它仅在当前进程的表中。<br>第 7 章检查了在我们甚至拥有文件系统之前管道的实现。 函数 sys_pipe 通过提供一种创建管道对的方法将该实现连接到文件系统。它的参数是一个指向两个整数空间的指针，它将记录两个新的文件描述符。然后它分配管道并安装文件描述符。</p>
+<p>8.15 real world</p>
+<p>实际操作系统中的缓冲区缓存比 xv6 的复杂得多，但它有两个相同的目的：缓存和同步对磁盘的访问。 Xv6 的缓冲区缓存，与 V6 一样，使用简单的最近最少使用 (LRU) 驱逐策略； 可以实施许多更复杂的策略，每个策略都适合某些工作负载，但对其他工作负载则不利。 更高效的 LRU 缓存将消除链表，而不是使用哈希表进行查找，使用堆进行 LRU 驱逐。 现代缓冲区高速缓存通常与虚拟内存系统集成以支持内存映射文件。<br>Xv6 的日志系统效率低下。 提交不能与文件系统系统调用同时发生。 系统记录整个块，即使块中只有几个字节被更改。 它执行同步日志写入，一次一个块，每个块可能需要整个磁盘旋转时间。 真正的日志记录系统解决了所有这些问题。</p>
+<p>日志记录不是提供崩溃恢复的唯一方法。 早期的文件系统在重新引导期间使用清除程序（例如，UNIX fsck 程序）来检查每个文件和目录以及块和 inode 空闲列表，查找并解决不一致。 对于大型文件系统，清理可能需要数小时，并且在某些情况下无法以导致原始系统调用成为原子的方式解决不一致。 从日志中恢复要快得多，并导致系统调用在崩溃时是原子的。<br>xv6 使用与早期 UNIX 相同的 inode 和目录的基本磁盘布局； 多年来，这一计划一直非常顽固。 BSD 的 UFS&#x2F;FFS 和 Linux 的 ext2&#x2F;ext3 使用本质上相同的数据结构。 文件系统布局中效率最低的部分是目录，它需要在每次查找期间对所有磁盘块进行线性扫描。 当目录只有几个磁盘块时，这是合理的，但对于包含许多文件的目录来说，这是昂贵的。 Microsoft Windows 的 NTFS、macOS 的 HFS 和 Solaris 的 ZFS（仅举几例）将目录实现为磁盘上的块平衡树。 这很复杂但保证对数时间目录查找。</p>
+<p>xv6 对磁盘故障处理很naive：如果磁盘操作失败，xv6 会崩溃。 这是否合理取决于硬件：如果操作系统位于使用冗余来屏蔽磁盘故障的特殊硬件之上，操作系统可能很少看到故障，因此恐慌是可以接受的。 另一方面，使用普通磁盘的操作系统应该预见到故障并更优雅地处理它们，这样一个文件中的块丢失不会影响文件系统其余部分的使用。<br>xv6 要求文件系统适合一个磁盘设备并且大小不变。 随着大型数据库和多媒体文件对存储的要求越来越高，操作系统正在开发消除“每个文件系统一个磁盘”瓶颈的方法。 基本方法是将许多磁盘组合成一个逻辑磁盘。 RAID 等硬件解决方案仍然是最受欢迎的，但当前的趋势是尽可能多地在软件中实现这种逻辑。 这些软件实现通常允许丰富的功能，例如通过动态添加或删除磁盘来增加或缩小逻辑设备。 当然，一个存储层可以<br>动态增长或收缩需要一个可以执行相同操作的文件系统：xv6 使用的固定大小的 inode 块数组在此类环境中无法正常工作。 将磁盘管理与文件系统分开可能是最干净的设计，但两者之间复杂的接口导致一些系统（如 Sun 的 ZFS）将它们结合起来。<br>xv6 的文件系统缺少现代文件系统的许多其他特性； 例如，它不支持快照和增量备份。<br>现代 Unix 系统允许使用与磁盘存储相同的系统调用来访问多种资源：命名管道、网络连接、远程访问的网络文件系统以及监视和控制接口，例如 &#x2F;proc。 与 xv6 的文件读取和文件写入中的 if 语句不同，这些系统通常为每个打开的文件提供一个函数指针表，每个操作一个，并调用函数指针来调用该 inode 的调用实现。 网络<br>文件系统和用户级文件系统提供将这些调用转换为网络 RPC 并在返回之前等待响应的功能。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MIT6.S081-chapter8</div>
+      <div>http://example.com/2023/03/20/MIT6-S081-chapter8/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Peng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/20/MIT6-S081-chapter7/" title="MIT6.S081-chapter7">
+                        <span class="hidden-mobile">MIT6.S081-chapter7</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
