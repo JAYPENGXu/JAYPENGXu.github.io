@@ -16,20 +16,20 @@
   <meta name="author" content="Peng">
   <meta name="keywords" content="">
   
-    <meta name="description" content="MIT6.S081 xv6 C   二、operating system organization 2.1 Abatracting physical resources ​       在这个计划中，每个应用程序甚至可以有自己的库来满足其需求。应用程序可以直接与硬件资源交互，并以最适合应用程序的方式使用这些资源（例如，实现高性能或可预测的性能）。一些嵌入式设备的操作系统或者实时的操作系统就是以这">
+    <meta name="description" content="二、operating system organization 2.1 Abatracting physical resources ​       在这个计划中，每个应用程序甚至可以有自己的库来满足其需求。应用程序可以直接与硬件资源交互，并以最适合应用程序的方式使用这些资源（例如，实现高性能或可预测的性能）。一些嵌入式设备的操作系统或者实时的操作系统就是以这种方式运行。这种库方法的缺点是，如果有">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT6.S081-chapter2">
-<meta property="og:url" content="http://example.com/2023/03/08/MIT6-S081-chapter2/index.html">
+<meta property="og:url" content="http://example.com/2023/02/13/MIT6-S081-chapter2/index.html">
 <meta property="og:site_name" content="学习笔记">
-<meta property="og:description" content="MIT6.S081 xv6 C   二、operating system organization 2.1 Abatracting physical resources ​       在这个计划中，每个应用程序甚至可以有自己的库来满足其需求。应用程序可以直接与硬件资源交互，并以最适合应用程序的方式使用这些资源（例如，实现高性能或可预测的性能）。一些嵌入式设备的操作系统或者实时的操作系统就是以这">
+<meta property="og:description" content="二、operating system organization 2.1 Abatracting physical resources ​       在这个计划中，每个应用程序甚至可以有自己的库来满足其需求。应用程序可以直接与硬件资源交互，并以最适合应用程序的方式使用这些资源（例如，实现高性能或可预测的性能）。一些嵌入式设备的操作系统或者实时的操作系统就是以这种方式运行。这种库方法的缺点是，如果有">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/03/08/MIT6-S081-chapter2/microkernel.png">
-<meta property="og:image" content="http://example.com/2023/03/08/MIT6-S081-chapter2/organization.png">
-<meta property="article:published_time" content="2023-03-08T03:35:42.000Z">
-<meta property="article:modified_time" content="2023-03-08T03:42:13.011Z">
+<meta property="og:image" content="http://example.com/2023/02/13/MIT6-S081-chapter2/microkernel.png">
+<meta property="og:image" content="http://example.com/2023/02/13/MIT6-S081-chapter2/organization.png">
+<meta property="article:published_time" content="2023-02-13T03:35:42.000Z">
+<meta property="article:modified_time" content="2023-03-20T11:17:45.353Z">
 <meta property="article:author" content="Peng">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2023/03/08/MIT6-S081-chapter2/microkernel.png">
+<meta name="twitter:image" content="http://example.com/2023/02/13/MIT6-S081-chapter2/microkernel.png">
   
   
   
@@ -227,8 +227,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-08 11:35" pubdate>
-          2023年3月8日 中午
+        <time datetime="2023-02-13 11:35" pubdate>
+          2023年2月13日 中午
         </time>
       </span>
     
@@ -301,13 +301,7 @@
             
               <div class="markdown-body">
                 
-                <ul>
-<li>MIT6.S081</li>
-<li>xv6</li>
-<li>C</li>
-</ul>
-<hr>
-<p>二、operating system organization</p>
+                <p>二、operating system organization</p>
 <p>2.1 Abatracting physical resources</p>
 <p>​       在这个计划中，每个应用程序甚至可以有自己的库来满足其需求。应用程序可以直接与硬件资源交互，并以最适合应用程序的方式使用这些资源（例如，实现高性能或可预测的性能）。一些嵌入式设备的操作系统或者实时的操作系统就是以这种方式运行。这种库方法的缺点是，如果有多个应用程序在运行，则这些应用程序必须运行良好。例如：每个应用程序必须周期性的放弃对CPU资源的使用以便于其它程序可以调用。如果每个程序都足够相信对方并且没有bug这样的合作的时分复用机制可以很OK的工作。但是没有bug和相信对方是难以实现的，因此一个比这个方案提供更强的隔离方案需要被提出。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">*ip += <span class="hljs-number">1</span>;<span class="hljs-comment">//将ip指向的变量加1，相当于 ++*ip, 或（*ip)++。</span><br><span class="hljs-comment">//一元操作符从右向左结合，所以*ip++相当于*(ip++)</span><br><span class="hljs-comment">//指针的大小比较：只有在两个指针指向同一个数组的元素时比较才合法，指针只有相减是合法的</span><br></code></pre></td></tr></table></figure>
@@ -323,13 +317,13 @@
 <p>2.3 kernel organization</p>
 <p>一个关键的问题是操作系统在管理者模式下该运行什么程序。一种可能是整个操作系统驻留在内核中，因此所有的系统调用的实现都运行在管理者模式。这种模式称为单片内核（monolithic kernel）。在这种形势下，整个操作系统拥有整个的硬件权限。这种组织方式很方便，因为操作系统设计者不必决定操作系统的哪一部分不需要完整的硬件特权。此外，操作系统的不同部分更容易协作。例如，操作系统可能有一个缓冲区缓存，它可以由文件系统和虚拟内存系统共享。这种组织的一个缺点是操作系统不同部分之间的接口通常很复杂，因此操作系统开发人员很容易犯错误。然而在这种模式下，一个错误的发生就会是致命的，因为在supervisor mode下的一个错误往往会导致内核失败，从而导致计算机停止工作。</p>
 <p>​	为了降低内核出错的风险，操作系统设计人员可以最大限度地减少在管理员模式下运行的操作系统代码量，并在用户模式下执行大部分操作系统。 这种内核组织称为微内核（micro kernel）。</p>
-<img src="/2023/03/08/MIT6-S081-chapter2/microkernel.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/02/13/MIT6-S081-chapter2/microkernel.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>在图中，文件系统作为用户级进程运行。 作为进程运行的操作系统服务称为服务器。 为了允许应用程序与文件服务器进行交互，内核提供了一种进程间通信机制，可以将消息从一个用户模式进程发送到另一个用户模式进程。例如，如果像 shell 这样的应用程序想要读取或写入文件，它会向文件服务器发送消息并等待响应。在微内核中，内核接口由一些低级函数组成，用于启动应用程序、发送消息、访问设备硬件等。这种组织允许内核相对简单，因为大多数操作系统驻留在用户级服务器中。</p>
 <p>​	在现实世界中，单体内核和微内核都很流行。 许多 Unix 内核是单一的。 例如，Linux 有一个单一的内核，尽管一些操作系统功能作为用户级服务器运行（例如，窗口系统）。 Linux 为操作系统密集型应用程序提供高性能，部分原因是内核的子系统可以紧密集成。 Minix、L4 和 QNX 等操作系统被组织为带有服务器的微内核，并且在嵌入式设备中得到了广泛部署。 L4 的变体 seL4 足够小，以至于它已经过内存安全和其他安全属性的验证。操作系统的开发人员之间存在很多争论，认为哪种组织更好，并且没有任何一种方式的确凿证据。 此外，它在很大程度上取决于“更好”的含义：更快的性能、更小的代码大小、内核的可靠性、整个操作系统（包括用户级服务）的可靠性等。还有一些实际考虑可能比哪个组织的问题更重要。 一些操作系统有一个微内核，但出于性能原因，在内核空间中运行一些用户级服务。 一些操作系统具有整体内核，因为它们是这样开始的，并且没有动力转向纯微内核组织，因为新功能可能比重写现有操作系统以适应微内核设计更重要。</p>
 <p>​	与大多数 Unix 操作系统一样，Xv6 是作为一个整体内核实现的。 这样，xv6内核接口对应操作系统接口，内核实现了完整的操作系统。 由于 xv6 不提供很多服务，它的内核比一些微内核更小，但概念上 xv6 是整体的。</p>
 <p>2.4 XV6 organization</p>
-<img src="/2023/03/08/MIT6-S081-chapter2/organization.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/02/13/MIT6-S081-chapter2/organization.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>trampoline.S(汇编代码)</p>
 <ul>
@@ -398,7 +392,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>MIT6.S081-chapter2</div>
-      <div>http://example.com/2023/03/08/MIT6-S081-chapter2/</div>
+      <div>http://example.com/2023/02/13/MIT6-S081-chapter2/</div>
     </div>
     <div class="license-meta">
       
@@ -410,7 +404,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月8日</div>
+          <div>2023年2月13日</div>
         </div>
       
       
@@ -442,7 +436,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/14/MIT6-S081-chapter3/" title="MIT6.S081-chapter3">
+                      <a href="/2023/02/19/MIT6-S081-chapter3/" title="MIT6.S081-chapter3">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">MIT6.S081-chapter3</span>
                         <span class="visible-mobile">上一篇</span>
@@ -452,7 +446,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/05/MIT6-S081-chapter1/" title="MIT6.S081-chapter1">
+                      <a href="/2023/02/07/MIT6-S081-chapter1/" title="MIT6.S081-chapter1">
                         <span class="hidden-mobile">MIT6.S081-chapter1</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>

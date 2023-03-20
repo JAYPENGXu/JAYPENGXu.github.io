@@ -19,16 +19,16 @@
     <meta name="description" content="scheduling  任何操作系统运行的进程都可能多于计算机的 CPU，因此需要一个计划来在进程之间分时分配 CPU。理想情况下，共享对用户进程是透明的。 一种常见的方法是通过将进程多路复用到硬件 CPU 上，为每个进程提供它拥有自己的虚拟 CPU 的错觉。 本章解释 xv6 如何实现这种多路复用。 7.1 multiplexing xv6 通过在两种情况下将每个 CPU 从一个进程切换到另一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT6.S081-chapter7">
-<meta property="og:url" content="http://example.com/2023/03/20/MIT6-S081-chapter7/index.html">
+<meta property="og:url" content="http://example.com/2023/03/15/MIT6-S081-chapter7/index.html">
 <meta property="og:site_name" content="学习笔记">
 <meta property="og:description" content="scheduling  任何操作系统运行的进程都可能多于计算机的 CPU，因此需要一个计划来在进程之间分时分配 CPU。理想情况下，共享对用户进程是透明的。 一种常见的方法是通过将进程多路复用到硬件 CPU 上，为每个进程提供它拥有自己的虚拟 CPU 的错觉。 本章解释 xv6 如何实现这种多路复用。 7.1 multiplexing xv6 通过在两种情况下将每个 CPU 从一个进程切换到另一">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/03/20/MIT6-S081-chapter7/71.png">
-<meta property="article:published_time" content="2023-03-20T11:08:04.000Z">
-<meta property="article:modified_time" content="2023-03-20T11:09:52.827Z">
+<meta property="og:image" content="http://example.com/2023/03/15/MIT6-S081-chapter7/71.png">
+<meta property="article:published_time" content="2023-03-15T11:08:04.000Z">
+<meta property="article:modified_time" content="2023-03-20T11:19:06.410Z">
 <meta property="article:author" content="Peng">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2023/03/20/MIT6-S081-chapter7/71.png">
+<meta name="twitter:image" content="http://example.com/2023/03/15/MIT6-S081-chapter7/71.png">
   
   
   
@@ -226,8 +226,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-20 19:08" pubdate>
-          2023年3月20日 晚上
+        <time datetime="2023-03-15 19:08" pubdate>
+          2023年3月15日 晚上
         </time>
       </span>
     
@@ -307,7 +307,7 @@
 <p>7.1 multiplexing</p>
 <p>xv6 通过在两种情况下将每个 CPU 从一个进程切换到另一个进程来实现多路复用。 首先，xv6 的睡眠和唤醒机制在进程等待设备或管道 I&#x2F;O 完成时切换，或者等待子进程退出，或者在睡眠系统调用中等待。 其次，xv6 周期性地强制切换以应对长时间不休眠计算的进程。 这种多路复用创造了每个进程都有自己的 CPU 的错觉，就像 xv6 使用内存分配器和硬件页表来创造每个进程都有自己的内存的错觉一样。</p>
 <p>实施多路复用会带来一些挑战。 一、如何从一个进程切换到另一个进程？ 虽然上下文切换的想法很简单，但是实现是 xv6 中一些最不透明的代码。 第二，如何以对用户进程透明的方式强制切换？ Xv6 使用硬件定时器中断驱动上下文切换的标准技术。 第三，所有 CPU 在同一共享进程集之间切换，并且需要锁定计划来避免竞争。第四，进程退出时必须释放进程的内存和其他资源，但它不能自己完成所有这些，因为（例如）它无法在仍在使用它的同时释放自己的内核堆栈。 第五，多核机器的每个核心都必须记住它正在执行哪个进程，以便系统调用影响正确进程的内核状态。 最后，sleep 和 wakeup 允许一个进程放弃 CPU 并等待被另一个进程或中断唤醒。需要注意避免导致唤醒通知丢失的竞争。 Xv6 试图尽可能简单地解决这些问题，但是生成的代码却很棘手。</p>
-<img src="/2023/03/20/MIT6-S081-chapter7/71.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/03/15/MIT6-S081-chapter7/71.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>7.2 code : context switching</p>
 <p>上图概述了一个用户进程切换到另一个用户进程所涉及的步骤，用户内核转换（系统调用或中断）到旧的内核线程。上下文切换到当前 CPU 的调度程序线程，上下文切换到新进程的内核线程，陷阱返回到用户级进程。 xv6 调度器每个 CPU 都有一个专用线程（保存的寄存器和堆栈），因为调度器在旧进程的内核堆栈上执行是不安全的：其他一些核心可能会唤醒进程并运行它，这将是一场灾难 在两个不同的内核上使用相同的堆栈。 在本节中，我们将研究在内核线程和调度程序线程之间切换的机制。</p>
@@ -414,7 +414,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>MIT6.S081-chapter7</div>
-      <div>http://example.com/2023/03/20/MIT6-S081-chapter7/</div>
+      <div>http://example.com/2023/03/15/MIT6-S081-chapter7/</div>
     </div>
     <div class="license-meta">
       
@@ -426,7 +426,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月20日</div>
+          <div>2023年3月15日</div>
         </div>
       
       
@@ -458,7 +458,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/20/MIT6-S081-chapter8/" title="MIT6.S081-chapter8">
+                      <a href="/2023/03/18/MIT6-S081-chapter8/" title="MIT6.S081-chapter8">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">MIT6.S081-chapter8</span>
                         <span class="visible-mobile">上一篇</span>
@@ -468,7 +468,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/20/MIT6-S081-chapter6/" title="MIT6.S081-chapter6">
+                      <a href="/2023/03/10/MIT6-S081-chapter6/" title="MIT6.S081-chapter6">
                         <span class="hidden-mobile">MIT6.S081-chapter6</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>

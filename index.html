@@ -243,13 +243,46 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/20/MIT6-S081-chapter8/" target="_self">
+        <a href="/2023/03/20/MIT6-S081-chapter9/" target="_self">
+          MIT6.S081-chapter9
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/20/MIT6-S081-chapter9/" target="_self">
+        <div>
+          9 concurrency revisited 同时获得良好的并行性能、并发时的正确性和可理解的代码是内核设计中的一大挑战。 直接使用锁是实现正确性的最佳途径，但并非总是可行。 本章重点介绍 xv6 被迫以复杂方式使用锁的示例，以及 xv6 使用类锁技术但不使用锁的示例。 9.1 locking patterns 缓存的项目通常很难锁定。 例如，文件系统的块缓存 (kernel&#x2F;bio.
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-20 19:14" pubdate>
+              2023-03-20
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/18/MIT6-S081-chapter8/" target="_self">
           MIT6.S081-chapter8
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/20/MIT6-S081-chapter8/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/18/MIT6-S081-chapter8/" target="_self">
         <div>
           file system  文件系统的目的是组织和存储数据。 文件系统通常支持在用户和应用程序之间共享数据以及持久性，以便数据在重启后仍然可用。xv6 文件系统提供类 Unix 文件、目录和路径名（参见第 1 章），并将其数据存储在 virtio 磁盘上以实现持久性。 文件系统解决了几个挑战：  文件系统需要磁盘上的数据结构来表示命名目录和文件的树，记录保存每个文件内容的块的身份，并记录磁盘的哪些
         </div>
@@ -259,8 +292,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-20 19:10" pubdate>
-              2023-03-20
+            <time datetime="2023-03-18 19:10" pubdate>
+              2023-03-18
             </time>
           </div>
         
@@ -276,13 +309,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/20/MIT6-S081-chapter7/" target="_self">
+        <a href="/2023/03/15/MIT6-S081-chapter7/" target="_self">
           MIT6.S081-chapter7
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/20/MIT6-S081-chapter7/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/15/MIT6-S081-chapter7/" target="_self">
         <div>
           scheduling  任何操作系统运行的进程都可能多于计算机的 CPU，因此需要一个计划来在进程之间分时分配 CPU。理想情况下，共享对用户进程是透明的。 一种常见的方法是通过将进程多路复用到硬件 CPU 上，为每个进程提供它拥有自己的虚拟 CPU 的错觉。 本章解释 xv6 如何实现这种多路复用。 7.1 multiplexing xv6 通过在两种情况下将每个 CPU 从一个进程切换到另一
         </div>
@@ -292,8 +325,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-20 19:08" pubdate>
-              2023-03-20
+            <time datetime="2023-03-15 19:08" pubdate>
+              2023-03-15
             </time>
           </div>
         
@@ -309,13 +342,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/20/MIT6-S081-chapter6/" target="_self">
+        <a href="/2023/03/10/MIT6-S081-chapter6/" target="_self">
           MIT6.S081-chapter6
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/20/MIT6-S081-chapter6/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/10/MIT6-S081-chapter6/" target="_self">
         <div>
           六、locking 大多数内核，包括 xv6，交错执行多个活动。 交错的来源之一是多处理器硬件：具有多个独立执行的 CPU 的计算机，例如 xv6 的 RISC-V。 这些多个 CPU 共享物理 RAM，xv6 利用共享来维护所有 CPU 读写的数据结构。 这种共享增加了一个 CPU 读取数据结构而另一个 CPU 正在更新数据结构的可能性，甚至多个 CPU 同时更新相同数据的可能性； 如果没有细心
         </div>
@@ -325,8 +358,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-20 19:00" pubdate>
-              2023-03-20
+            <time datetime="2023-03-10 19:00" pubdate>
+              2023-03-10
             </time>
           </div>
         
@@ -342,15 +375,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/20/MIT6-S081-chapter5/" target="_self">
+        <a href="/2023/03/01/MIT6-S081-chapter5/" target="_self">
           MIT6.S081-chapter5
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/20/MIT6-S081-chapter5/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/01/MIT6-S081-chapter5/" target="_self">
         <div>
-          MIT6.S081 xv6 C   五、Interrupts and device drivers 驱动程序是操作系统中管理特定设备的代码：它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能等待设备 I&#x2F;O 的进程交互。 驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档不足。 需要操作系统注意的设备通常可以
+          五、Interrupts and device drivers 驱动程序是操作系统中管理特定设备的代码：它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能等待设备 I&#x2F;O 的进程交互。 驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档不足。 需要操作系统注意的设备通常可以配置为生成中断，这是一种陷阱。 内核陷
         </div>
       </a>
 
@@ -358,8 +391,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-20 18:54" pubdate>
-              2023-03-20
+            <time datetime="2023-03-01 18:54" pubdate>
+              2023-03-01
             </time>
           </div>
         
@@ -375,15 +408,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/20/MIT6-S081-chapter4/" target="_self">
+        <a href="/2023/02/25/MIT6-S081-chapter4/" target="_self">
           MIT6.S081-chapter4
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/20/MIT6-S081-chapter4/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/02/25/MIT6-S081-chapter4/" target="_self">
         <div>
-          MIT6.S081 xv6 C   四、 traps and system calls ​	有三种事件会导致 CPU 搁置指令的普通执行，并强制将控制权转移到处理该事件的特殊代码。 一种情况是系统调用syscall，当用户程序执行 ecall 指令要求内核为它做某事时。 另一种情况是异常exception：指令（用户或内核）做了一些非法的事情，例如除以零或使用无效的虚拟地址。 第三种情况是设备中
+          四、 traps and system calls ​	有三种事件会导致 CPU 搁置指令的普通执行，并强制将控制权转移到处理该事件的特殊代码。 一种情况是系统调用syscall，当用户程序执行 ecall 指令要求内核为它做某事时。 另一种情况是异常exception：指令（用户或内核）做了一些非法的事情，例如除以零或使用无效的虚拟地址。 第三种情况是设备中断，当设备发出需要注意的信号时，例如当
         </div>
       </a>
 
@@ -391,8 +424,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-20 18:51" pubdate>
-              2023-03-20
+            <time datetime="2023-02-25 18:51" pubdate>
+              2023-02-25
             </time>
           </div>
         
@@ -408,15 +441,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/14/MIT6-S081-chapter3/" target="_self">
+        <a href="/2023/02/19/MIT6-S081-chapter3/" target="_self">
           MIT6.S081-chapter3
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/14/MIT6-S081-chapter3/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/02/19/MIT6-S081-chapter3/" target="_self">
         <div>
-          MIT6.S081 xv6 C   三、 page tables ​	操作系统通过page table为每个进程提供自己的私有地址空间和内存，从而实现内存隔离。页表决定了内存地址空间的含义，以及可以访问物理内存的哪些部分。它们允许xv6隔离不同进程的地址空间并将它们多路复用到单个物理内存中。页表是一种流行的设计，因为它们提供了一种允许操作系统执行一些小trick的执行方式。xv6执行一些技巧，在
+          三、 page tables ​	操作系统通过page table为每个进程提供自己的私有地址空间和内存，从而实现内存隔离。页表决定了内存地址空间的含义，以及可以访问物理内存的哪些部分。它们允许xv6隔离不同进程的地址空间并将它们多路复用到单个物理内存中。页表是一种流行的设计，因为它们提供了一种允许操作系统执行一些小trick的执行方式。xv6执行一些技巧，在多个地址空间中映射相同的内存(tram
         </div>
       </a>
 
@@ -424,8 +457,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-14 17:11" pubdate>
-              2023-03-14
+            <time datetime="2023-02-19 17:11" pubdate>
+              2023-02-19
             </time>
           </div>
         
@@ -441,15 +474,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/08/MIT6-S081-chapter2/" target="_self">
+        <a href="/2023/02/13/MIT6-S081-chapter2/" target="_self">
           MIT6.S081-chapter2
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/08/MIT6-S081-chapter2/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/02/13/MIT6-S081-chapter2/" target="_self">
         <div>
-          MIT6.S081 xv6 C   二、operating system organization 2.1 Abatracting physical resources ​       在这个计划中，每个应用程序甚至可以有自己的库来满足其需求。应用程序可以直接与硬件资源交互，并以最适合应用程序的方式使用这些资源（例如，实现高性能或可预测的性能）。一些嵌入式设备的操作系统或者实时的操作系统就是以这
+          二、operating system organization 2.1 Abatracting physical resources ​       在这个计划中，每个应用程序甚至可以有自己的库来满足其需求。应用程序可以直接与硬件资源交互，并以最适合应用程序的方式使用这些资源（例如，实现高性能或可预测的性能）。一些嵌入式设备的操作系统或者实时的操作系统就是以这种方式运行。这种库方法的缺点是，如果有
         </div>
       </a>
 
@@ -457,8 +490,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-08 11:35" pubdate>
-              2023-03-08
+            <time datetime="2023-02-13 11:35" pubdate>
+              2023-02-13
             </time>
           </div>
         
@@ -474,15 +507,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/05/MIT6-S081-chapter1/" target="_self">
+        <a href="/2023/02/07/MIT6-S081-chapter1/" target="_self">
           MIT6.S081-chapter1
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/05/MIT6-S081-chapter1/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/02/07/MIT6-S081-chapter1/" target="_self">
         <div>
-          MIT6.S081 xv6 C   《xv6: a simple, Unix-like teaching operating system》一、 操作系统接口（Operating system interfaces） ​	操作系统的工作是在多个程序之间共享一台计算机，并提供一个比硬件本身支持的更有用的服务集，操作系统在多个程序之间共享硬件资源，以便它们（看似）同时运行，操作系统为程序交互提供受控
+          《xv6: a simple, Unix-like teaching operating system》一、 操作系统接口（Operating system interfaces） ​	操作系统的工作是在多个程序之间共享一台计算机，并提供一个比硬件本身支持的更有用的服务集，操作系统在多个程序之间共享硬件资源，以便它们（看似）同时运行，操作系统为程序交互提供受控方式，以便它们可以共享数据或者协同工作
         </div>
       </a>
 
@@ -490,8 +523,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-05 22:12" pubdate>
-              2023-03-05
+            <time datetime="2023-02-07 22:12" pubdate>
+              2023-02-07
             </time>
           </div>
         

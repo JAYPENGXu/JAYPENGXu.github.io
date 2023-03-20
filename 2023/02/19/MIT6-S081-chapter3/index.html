@@ -16,22 +16,22 @@
   <meta name="author" content="Peng">
   <meta name="keywords" content="">
   
-    <meta name="description" content="MIT6.S081 xv6 C   三、 page tables ​	操作系统通过page table为每个进程提供自己的私有地址空间和内存，从而实现内存隔离。页表决定了内存地址空间的含义，以及可以访问物理内存的哪些部分。它们允许xv6隔离不同进程的地址空间并将它们多路复用到单个物理内存中。页表是一种流行的设计，因为它们提供了一种允许操作系统执行一些小trick的执行方式。xv6执行一些技巧，在">
+    <meta name="description" content="三、 page tables ​	操作系统通过page table为每个进程提供自己的私有地址空间和内存，从而实现内存隔离。页表决定了内存地址空间的含义，以及可以访问物理内存的哪些部分。它们允许xv6隔离不同进程的地址空间并将它们多路复用到单个物理内存中。页表是一种流行的设计，因为它们提供了一种允许操作系统执行一些小trick的执行方式。xv6执行一些技巧，在多个地址空间中映射相同的内存(tram">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT6.S081-chapter3">
-<meta property="og:url" content="http://example.com/2023/03/14/MIT6-S081-chapter3/index.html">
+<meta property="og:url" content="http://example.com/2023/02/19/MIT6-S081-chapter3/index.html">
 <meta property="og:site_name" content="学习笔记">
-<meta property="og:description" content="MIT6.S081 xv6 C   三、 page tables ​	操作系统通过page table为每个进程提供自己的私有地址空间和内存，从而实现内存隔离。页表决定了内存地址空间的含义，以及可以访问物理内存的哪些部分。它们允许xv6隔离不同进程的地址空间并将它们多路复用到单个物理内存中。页表是一种流行的设计，因为它们提供了一种允许操作系统执行一些小trick的执行方式。xv6执行一些技巧，在">
+<meta property="og:description" content="三、 page tables ​	操作系统通过page table为每个进程提供自己的私有地址空间和内存，从而实现内存隔离。页表决定了内存地址空间的含义，以及可以访问物理内存的哪些部分。它们允许xv6隔离不同进程的地址空间并将它们多路复用到单个物理内存中。页表是一种流行的设计，因为它们提供了一种允许操作系统执行一些小trick的执行方式。xv6执行一些技巧，在多个地址空间中映射相同的内存(tram">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/03/14/MIT6-S081-chapter3/riscv-pagetable.png">
-<meta property="og:image" content="http://example.com/2023/03/14/MIT6-S081-chapter3/riscv_address.png">
-<meta property="og:image" content="http://example.com/2023/03/14/MIT6-S081-chapter3/riscv_physical_address.png">
-<meta property="og:image" content="http://example.com/2023/03/14/MIT6-S081-chapter3/process.png">
-<meta property="article:published_time" content="2023-03-14T09:11:33.000Z">
-<meta property="article:modified_time" content="2023-03-14T09:21:12.956Z">
+<meta property="og:image" content="http://example.com/2023/02/19/MIT6-S081-chapter3/riscv-pagetable.png">
+<meta property="og:image" content="http://example.com/2023/02/19/MIT6-S081-chapter3/riscv_address.png">
+<meta property="og:image" content="http://example.com/2023/02/19/MIT6-S081-chapter3/riscv_physical_address.png">
+<meta property="og:image" content="http://example.com/2023/02/19/MIT6-S081-chapter3/process.png">
+<meta property="article:published_time" content="2023-02-19T09:11:33.000Z">
+<meta property="article:modified_time" content="2023-03-20T11:18:01.493Z">
 <meta property="article:author" content="Peng">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2023/03/14/MIT6-S081-chapter3/riscv-pagetable.png">
+<meta name="twitter:image" content="http://example.com/2023/02/19/MIT6-S081-chapter3/riscv-pagetable.png">
   
   
   
@@ -229,8 +229,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-14 17:11" pubdate>
-          2023年3月14日 下午
+        <time datetime="2023-02-19 17:11" pubdate>
+          2023年2月19日 下午
         </time>
       </span>
     
@@ -303,22 +303,16 @@
             
               <div class="markdown-body">
                 
-                <ul>
-<li>MIT6.S081</li>
-<li>xv6</li>
-<li>C</li>
-</ul>
-<hr>
-<p>三、 page tables</p>
+                <p>三、 page tables</p>
 <p>​	操作系统通过<code>page table</code>为每个进程提供自己的私有地址空间和内存，从而实现内存隔离。页表决定了内存地址空间的含义，以及可以访问物理内存的哪些部分。它们允许xv6隔离不同进程的地址空间并将它们多路复用到单个物理内存中。页表是一种流行的设计，因为它们提供了一种允许操作系统执行一些小trick的执行方式。xv6执行一些技巧，在多个地址空间中映射相同的内存(trampoline page)，并使用未映射的页面保护内核和用户堆栈。</p>
 <p>3.1 paging hardware</p>
 <p>作为提醒，RISC-V 指令（用户和内核）操作虚拟地址。 机器的 RAM 或物理内存是用物理地址索引的。 RISC-V 页表硬件通过将每个虚拟地址映射到物理地址来连接这两种地址。</p>
 <p>​	xv6 运行在 Sv39 RISC-V 上，这意味着只使用 64 位虚拟地址的低 39 位； 前 25 位未使用。在这个Sv39配置中，RISC-V页表在逻辑上是一个包含$2^{27}$（134217728）个页表条目（PTE）的数组。每个PTE包含一个44bit的物理页码（PPN）和一些标志位（Flags）。分页硬件使用前27位转换虚拟地址，将39位中的bit索引到页表中找到一个PTE，并制作一个56位的物理地址，其高44位来自PTE中的PPN，低12位是从PTE中复制的原始虚拟地址。图 3.1 将页表的逻辑视图显示为一个简单的 PTE 数组（有关更完整的故事，请参见图 3.2）。 页表使操作系统能够以 4096 ($2^{12}$) 字节的对齐块的粒度对虚拟地址到物理地址的转换进行控制。 这样的块称为 <em>page</em>。</p>
-<img src="/2023/03/14/MIT6-S081-chapter3/riscv-pagetable.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/02/19/MIT6-S081-chapter3/riscv-pagetable.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>​	在 Sv39 RISC-V 中，虚拟地址的前 25 位不用于转换。 物理地址也有增长的空间：PTE 格式中有空间让物理页号再增长 10 位。 RISC-V 的设计者根据技术预测选择了这些数字。$2^{39}$字节是512GB，对于在RISC-V计算机上运行的应用程序来说，这应该是足够的地址空间。256足以在不久的将来容纳可能的I&#x2F;O设备和DRAM芯片的物理内存空间。如果需要更多，RISC-V设计者已经定义了具有48位虚拟地址的Sv48。</p>
 <p>​	如图 3.2 所示，RISC-V CPU 通过三个步骤将虚拟地址转换为物理地址。 页表以三级树的形式存储在物理内存中。 树的根是一个 4096 字节的页表页，包含 512 个 PTE，其中包含树的下一级页表页的物理地址。 这些页面中的每一页都包含树中最后一层的 512 个 PTE。分页硬件使用 27 位中的高 9 位选择根页表页中的 PTE，中间 9 位选择树的下一级页表页中的 PTE，低 9 位 位来选择最终的 PTE。 （在 Sv48 RISC-V 中，页表有四层，虚拟地址索引的第 39 位到第 47 位进入顶层。）</p>
-<img src="/2023/03/14/MIT6-S081-chapter3/riscv_address.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/02/19/MIT6-S081-chapter3/riscv_address.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>如果转换地址所需的三个 PTE 中的任何一个不存在，分页硬件将引发页面错误异常，将其留给内核来处理异常。</p>
 <p>​	与图 3.1 的单层设计相比，图 3.2 的三层结构允许采用内存高效的方式来记录 PTE。 在大范围虚拟地址没有映射的常见情况下，三级结构可以省略整个页目录。 例如，如果应用程序只使用从地址 0 开始的几个页面，那么顶级页面目录的条目 1 到 511 是无效的，内核不必为 511 中间页面目录分配页面。 此外，内核也不必为那些 511 中间页目录为底层页目录分配页面。 因此，在本例中，三级设计为中间页目录节省了 511 页，为底层页目录节省了 511 × 512 页。</p>
@@ -327,7 +321,7 @@
 <p>​	需要告诉硬件使用页表，内核必须将页表的物理地址写入<code>satp</code>寄存器。每个CPU都有自己的<code>stap</code>。CPU将使用自己的<code>satp</code>指向的页表来翻译后续指令生成的所有地址。每个CPU都有自己的satp，这样不同的CPU可以运行不同的进程，每个进程都有自己的页表描述的私有地址空间。</p>
 <p>​	通常，内核将所有物理内存映射到其页表中，以便它可以使用加载&#x2F;存储指令读取和写入物理内存中的任何位置。 由于页目录在物理内存中，内核可以通过使用标准存储指令写入 PTE 的虚拟地址来在页目录中编程 PTE 的内容。</p>
 <p>​	关于术语的一些注释。 <strong>物理内存是指 DRAM 中的存储单元</strong>。 一个字节的物理内存有一个地址，称为物理地址。 指令只使用虚拟地址，分页硬件将其转换为物理地址，然后发送到 DRAM 硬件以读取或写入存储。 与物理内存和虚拟地址不同，虚拟内存不是物理对象，而是指内核提供的用于管理物理内存和虚拟地址的抽象和机制的集合。</p>
-<img src="/2023/03/14/MIT6-S081-chapter3/riscv_physical_address.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/02/19/MIT6-S081-chapter3/riscv_physical_address.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>3.2 kernel address space</p>
 <p>​	xv6 为每个进程维护一个页表，用于描述每个进程的用户地址空间，以及一个描述内核地址空间的页表（所有进程共享这个描述内核地址空间的页表）。 内核配置其地址空间布局，使其能够访问可预测虚拟地址处的物理内存和各种硬件资源。 图 3.3 显示了此布局如何将内核虚拟地址映射到物理地址。 文件 (kernel&#x2F;memlayout.h) 声明了 xv6 内核内存布局的常量。</p>
@@ -357,7 +351,7 @@
 <p>​	函数 main 调用 <code>kinit</code> 来初始化分配器 (kernel&#x2F;kalloc.c:27)。 <code>kinit</code> 初始化空闲列表以保存内核末尾和 PHYSTOP 之间的每个页面。 xv6 应该通过解析硬件提供的配置信息来确定有多少物理内存可用。 相反，xv6 假定机器有 128 兆字节的 RAM。 kinit 调用 <code>freerange(end, PHYSTOP)</code> 通过每页调用 <code>kfree</code> 将内存添加到空闲列表。 PTE 只能引用在 4096 字节边界（是 4096 的倍数）上对齐的物理地址，因此 <code>freerange</code> 使用 PGROUNDUP 来确保它只释放对齐的物理地址。 分配器开始时没有内存； 这些对 <code>kfree</code> 的调用给它一些管理。</p>
 <p>​	分配器有时将地址视为整数以便对其执行算术运算（例如，遍历自由范围内的所有页面），有时将地址用作读写内存的指针（例如，操纵存储在每个页面中的运行结构）； 这种地址的双重使用是分配器代码充满 C 类型转换的主要原因。 另一个原因是释放和分配本质上改变了内存的类型。</p>
 <p>​	函数 <code>kfree</code> (kernel&#x2F;kalloc.c:47) 首先将要释放的内存中的每个字节设置为值 1。这将导致在释放内存后使用内存的代码（使用“悬挂引用”）读取垃圾而不是 旧的有效内容； 这会导致此类代码更快地崩溃。 然后 <code>kfree</code> 将页面添加到空闲列表：它将 pa 转换为指向 struct run 的指针，在 <code>r-&gt;next</code> 中记录空闲列表的旧开始，并将空闲列表设置为等于 r。 <code>kalloc</code> 删除并返回空闲列表中的第一个元素。</p>
-<img src="/2023/03/14/MIT6-S081-chapter3/process.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/02/19/MIT6-S081-chapter3/process.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>3.6 Process address space</p>
 <p>​	每个进程都有一个单独的页表，xv6 在进程之间切换时，也会改变页表。 如图 2.3 所示，一个进程的用户内存从虚拟地址 0 开始，并且可以增加到 MAXVA (kernel&#x2F;riscv.h:360)，原则上允许一个进程处理 256 GB 的内存。</p>
@@ -413,7 +407,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>MIT6.S081-chapter3</div>
-      <div>http://example.com/2023/03/14/MIT6-S081-chapter3/</div>
+      <div>http://example.com/2023/02/19/MIT6-S081-chapter3/</div>
     </div>
     <div class="license-meta">
       
@@ -425,7 +419,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月14日</div>
+          <div>2023年2月19日</div>
         </div>
       
       
@@ -457,7 +451,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/20/MIT6-S081-chapter4/" title="MIT6.S081-chapter4">
+                      <a href="/2023/02/25/MIT6-S081-chapter4/" title="MIT6.S081-chapter4">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">MIT6.S081-chapter4</span>
                         <span class="visible-mobile">上一篇</span>
@@ -467,7 +461,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/08/MIT6-S081-chapter2/" title="MIT6.S081-chapter2">
+                      <a href="/2023/02/13/MIT6-S081-chapter2/" title="MIT6.S081-chapter2">
                         <span class="hidden-mobile">MIT6.S081-chapter2</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>

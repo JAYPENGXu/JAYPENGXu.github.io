@@ -16,15 +16,15 @@
   <meta name="author" content="Peng">
   <meta name="keywords" content="">
   
-    <meta name="description" content="MIT6.S081 xv6 C   五、Interrupts and device drivers 驱动程序是操作系统中管理特定设备的代码：它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能等待设备 I&#x2F;O 的进程交互。 驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档不足。 需要操作系统注意的设备通常可以">
+    <meta name="description" content="五、Interrupts and device drivers 驱动程序是操作系统中管理特定设备的代码：它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能等待设备 I&#x2F;O 的进程交互。 驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档不足。 需要操作系统注意的设备通常可以配置为生成中断，这是一种陷阱。 内核陷">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT6.S081-chapter5">
-<meta property="og:url" content="http://example.com/2023/03/20/MIT6-S081-chapter5/index.html">
+<meta property="og:url" content="http://example.com/2023/03/01/MIT6-S081-chapter5/index.html">
 <meta property="og:site_name" content="学习笔记">
-<meta property="og:description" content="MIT6.S081 xv6 C   五、Interrupts and device drivers 驱动程序是操作系统中管理特定设备的代码：它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能等待设备 I&#x2F;O 的进程交互。 驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档不足。 需要操作系统注意的设备通常可以">
+<meta property="og:description" content="五、Interrupts and device drivers 驱动程序是操作系统中管理特定设备的代码：它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能等待设备 I&#x2F;O 的进程交互。 驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档不足。 需要操作系统注意的设备通常可以配置为生成中断，这是一种陷阱。 内核陷">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-03-20T10:54:16.000Z">
-<meta property="article:modified_time" content="2023-03-20T10:55:16.252Z">
+<meta property="article:published_time" content="2023-03-01T10:54:16.000Z">
+<meta property="article:modified_time" content="2023-03-20T11:18:39.703Z">
 <meta property="article:author" content="Peng">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -224,8 +224,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-20 18:54" pubdate>
-          2023年3月20日 晚上
+        <time datetime="2023-03-01 18:54" pubdate>
+          2023年3月1日 晚上
         </time>
       </span>
     
@@ -298,13 +298,7 @@
             
               <div class="markdown-body">
                 
-                <ul>
-<li>MIT6.S081</li>
-<li>xv6</li>
-<li>C</li>
-</ul>
-<hr>
-<p>五、Interrupts and device drivers</p>
+                <p>五、Interrupts and device drivers</p>
 <p>驱动程序是操作系统中管理特定设备的代码：它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能等待设备 I&#x2F;O 的进程交互。 驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档不足。</p>
 <p>需要操作系统注意的设备通常可以配置为生成中断，这是一种陷阱。 内核陷阱处理代码识别设备何时引发中断并调用驱动程序的中断处理程序； 在 xv6 中，这种调度发生在 <code>devintr</code> (kernel&#x2F;trap.c:177) 中。</p>
 <p>许多设备驱动程序在两种上下文中执行代码：上半部分在进程的内核线程中运行，下半部分在中断时执行。 上半部分通过syscall调用，例如希望设备执行 I&#x2F;O 的读取和写入。 这段代码可能会要求硬件开始一个操作（例如，要求磁盘读取一个块）； 然后代码等待操作完成。 最终设备完成操作并引发中断。驱动程序的中断处理程序充当下半部分，找出已完成的操作，在适当的情况下唤醒等待进程，并告诉硬件开始处理任何等待的下一个操作。</p>
@@ -365,7 +359,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>MIT6.S081-chapter5</div>
-      <div>http://example.com/2023/03/20/MIT6-S081-chapter5/</div>
+      <div>http://example.com/2023/03/01/MIT6-S081-chapter5/</div>
     </div>
     <div class="license-meta">
       
@@ -377,7 +371,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月20日</div>
+          <div>2023年3月1日</div>
         </div>
       
       
@@ -409,7 +403,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/20/MIT6-S081-chapter6/" title="MIT6.S081-chapter6">
+                      <a href="/2023/03/10/MIT6-S081-chapter6/" title="MIT6.S081-chapter6">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">MIT6.S081-chapter6</span>
                         <span class="visible-mobile">上一篇</span>
@@ -419,7 +413,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/20/MIT6-S081-chapter4/" title="MIT6.S081-chapter4">
+                      <a href="/2023/02/25/MIT6-S081-chapter4/" title="MIT6.S081-chapter4">
                         <span class="hidden-mobile">MIT6.S081-chapter4</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>

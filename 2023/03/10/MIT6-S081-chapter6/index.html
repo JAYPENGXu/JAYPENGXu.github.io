@@ -19,18 +19,18 @@
     <meta name="description" content="六、locking 大多数内核，包括 xv6，交错执行多个活动。 交错的来源之一是多处理器硬件：具有多个独立执行的 CPU 的计算机，例如 xv6 的 RISC-V。 这些多个 CPU 共享物理 RAM，xv6 利用共享来维护所有 CPU 读写的数据结构。 这种共享增加了一个 CPU 读取数据结构而另一个 CPU 正在更新数据结构的可能性，甚至多个 CPU 同时更新相同数据的可能性； 如果没有细心">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT6.S081-chapter6">
-<meta property="og:url" content="http://example.com/2023/03/20/MIT6-S081-chapter6/index.html">
+<meta property="og:url" content="http://example.com/2023/03/10/MIT6-S081-chapter6/index.html">
 <meta property="og:site_name" content="学习笔记">
 <meta property="og:description" content="六、locking 大多数内核，包括 xv6，交错执行多个活动。 交错的来源之一是多处理器硬件：具有多个独立执行的 CPU 的计算机，例如 xv6 的 RISC-V。 这些多个 CPU 共享物理 RAM，xv6 利用共享来维护所有 CPU 读写的数据结构。 这种共享增加了一个 CPU 读取数据结构而另一个 CPU 正在更新数据结构的可能性，甚至多个 CPU 同时更新相同数据的可能性； 如果没有细心">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/03/20/MIT6-S081-chapter6/lock1.png">
-<meta property="og:image" content="http://example.com/2023/03/20/MIT6-S081-chapter6/lock2.png">
-<meta property="og:image" content="http://example.com/2023/03/20/MIT6-S081-chapter6/lock3.png">
-<meta property="article:published_time" content="2023-03-20T11:00:30.000Z">
-<meta property="article:modified_time" content="2023-03-20T11:07:15.563Z">
+<meta property="og:image" content="http://example.com/2023/03/10/MIT6-S081-chapter6/lock1.png">
+<meta property="og:image" content="http://example.com/2023/03/10/MIT6-S081-chapter6/lock2.png">
+<meta property="og:image" content="http://example.com/2023/03/10/MIT6-S081-chapter6/lock3.png">
+<meta property="article:published_time" content="2023-03-10T11:00:30.000Z">
+<meta property="article:modified_time" content="2023-03-20T11:18:51.923Z">
 <meta property="article:author" content="Peng">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2023/03/20/MIT6-S081-chapter6/lock1.png">
+<meta name="twitter:image" content="http://example.com/2023/03/10/MIT6-S081-chapter6/lock1.png">
   
   
   
@@ -228,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-20 19:00" pubdate>
-          2023年3月20日 晚上
+        <time datetime="2023-03-10 19:00" pubdate>
+          2023年3月10日 晚上
         </time>
       </span>
     
@@ -306,13 +306,13 @@
 <p>大多数内核，包括 xv6，交错执行多个活动。 交错的来源之一是多处理器硬件：具有多个独立执行的 CPU 的计算机，例如 xv6 的 RISC-V。 这些多个 CPU 共享物理 RAM，xv6 利用共享来维护所有 CPU 读写的数据结构。 这种共享增加了一个 CPU 读取数据结构而另一个 CPU 正在更新数据结构的可能性，甚至多个 CPU 同时更新相同数据的可能性； 如果没有细心的设计，这种并行访问很可能会产生不正确的结果或损坏的数据结构。 即使在单处理器上，内核也可能在多个线程之间切换 CPU，导致它们的执行相互交错。 最后，如果中断发生在错误的时间，则修改与某些可中断代码相同的数据的设备中断处理程序可能会损坏数据。 并发一词是指由于多处理器并行性、线程切换或中断而导致多个指令流交错的情况。</p>
 <p>内核充满了并发访问的数据。 例如，两个 CPU 可以同时调用 kalloc，从而同时从空闲列表的头部弹出。 内核设计者喜欢允许大量的并发，因为它可以通过并行性和响应性提高来提高系统性能。然而，结果是内核设计者花了很多精力说服自己尽管有这种并发性，但仍然是正确的。 有很多方法可以获得正确的代码，其中一些比其他的更容易推理。 以并发下的正确性为目标的策略，以及支持它们的抽象，被称为并发控制技术。</p>
 <p>xv6 根据情况使用多种并发控制技术。 本章重点介绍一种广泛使用的技术：锁。 锁提供互斥，确保一次只有一个 CPU 可以持有锁。 如果程序员为每个共享数据项关联一个锁，并且代码在使用某个项时始终持有关联的锁，那么该项将一次仅由一个 CPU 使用。 在这种情况下，我们说锁保护了数据项。 虽然锁是一种易于理解的并发控制机制，但锁的缺点是它们会扼杀性能，因为它们会序列化并发操作。</p>
-<img src="/2023/03/20/MIT6-S081-chapter6/lock1.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/03/10/MIT6-S081-chapter6/lock1.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>6.1 race conditions</p>
 <p>作为我们为什么需要锁的一个例子，考虑在两个不同的 CPU 上调用 wait 的两个进程。 等待释放子进程的内存。 因此在每个 CPU 上，内核将调用 kfree 来释放子页面。 内核分配器维护一个链表：<code>kalloc()</code> (kernel&#x2F;kalloc.c:69) 从空闲页面列表中弹出一个内存页面，<code>kfree()</code> 将一个页面压入空闲列表。 为了获得最佳性能，我们可能希望两个父进程的 kfree 并行执行，而不必相互等待，但考虑到 xv6 的 kfree 实现，这是不正确的。图 6.1 更详细地说明了设置：链表位于两个 CPU 共享的内存中，这两个 CPU 使用load和store指令来操作链表。 （实际上，处理器有缓存，但从概念上讲，多处理器系统的行为就像有一个共享内存一样。）如果没有并发请求，我们可以按如下方式实现列表push操作：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">element</span> &#123;</span><br>    <span class="hljs-type">int</span> data;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">element</span> *<span class="hljs-title">next</span>;</span><br>&#125;;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">element</span> *<span class="hljs-title">list</span> =</span> <span class="hljs-number">0</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">push</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span><br>&#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">element</span> *<span class="hljs-title">l</span></span><br><span class="hljs-class">    <span class="hljs-title">l</span> =</span> <span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span> *l);<br>    l -&gt; data = data; <span class="hljs-comment">//15</span><br>    l -&gt; next = <span class="hljs-built_in">list</span>; <span class="hljs-comment">//16</span><br>    <span class="hljs-built_in">list</span> = l;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<img src="/2023/03/20/MIT6-S081-chapter6/lock2.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/03/10/MIT6-S081-chapter6/lock2.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>如果单独执行，这样的代码是正确的。 但是，如果多个副本同时执行，则代码不正确。 如果两个 CPU 同时执行 push，它们都可能先执行图 6.1 所示的第 15 行，然后再执行第 16 行，这会导致错误的结果，如图 6.2 所示。 然后将有两个列表元素，其 next 设置为列表的前一个值。 当 list 的两个赋值发生在第 16 行时，第二个将覆盖第一个； 第一个赋值中涉及的元素将丢失。</p>
 <p>第 16 行丢失的更新是竞争条件的一个例子。 竞争条件是同时访问内存位置并且至少有一次访问是写入的情况。 一个竞争往往是错误的迹象，更新丢失（如果访问是写入）或读取未完全更新的数据结构。 比赛的结果取决于所涉及的两个 CPU 的确切时间和内存系统如何对它们的内存操作进行排序，这会使竞争引起的错误难以重现和调试。 例如，在调试推送时添加打印语句可能会改变执行时间，足以使竞争消失。避免竞争的通常方法是使用🔒。锁确保互斥，使同一时间只有一个CPU可以执行push的敏感行，这使得上述情况不可能发生。</p>
@@ -345,7 +345,7 @@
 <p>6.4 deadlock adn lock ordering</p>
 <p>如果一块代码需要同时拥有多个锁，那么应该让其他需要相同锁的进程按照相同的顺序acquire这些锁，否则可能出现死锁。比如进程1和2都需要锁A和锁B，如果进程1先acquire了锁A，进程2acquire了锁B，那么接下来进程1需要acquire锁B，进程2需要acquire锁A，但是这两个都不能acquire到也无法release各自的锁，就会出现死锁。</p>
 <p>由于<code>sleep</code>在xv6中的机制，xv6中有很多长度为2的lock-order。比如<code>consoleintr</code>中要求先获得<code>cons.lock</code>，当整行输入完毕之后再唤醒等待输入的进程，这需要获得睡眠进程的锁。xv6的文件系统中有一个很长的lock chain，如果要创建一个文件需要同时拥有文件夹的锁、新文件的inode的锁、磁盘块缓冲区的锁、磁盘驱动器的<code>vdisk_lock</code>的锁以及调用进程的<code>p-&gt;lock</code>的锁</p>
-<img src="/2023/03/20/MIT6-S081-chapter6/lock3.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
+<img src="/2023/03/10/MIT6-S081-chapter6/lock3.png" srcset="/img/loading.gif" lazyload class="" title="架构图">
 
 <p>除了lock ordering之外，锁和中断的交互也可能造成死锁。比如当<code>sys_sleep</code>拥有<code>tickslock</code>时，发生定时器中断，定时器中断的handler也需要acquire<code>tickslock</code>，就会等待<code>sys_sleep</code>释放，但是因为在中断里面，只要不从中断返回<code>sys_sleep</code>就永远无法释放，因此造成了死锁。对这种死锁的解决方法是：如果一个中断中需要获取某个特定的spinlock，那么当CPU获得了这个spinlock之后，该中断必须被禁用。xv6的机制则更加保守：当CPU获取了任意一个lock之后，将disable掉这个CPU上的所有中断（其他CPU的中断保持原样）。当CPU不再拥有spinlock时，将通过<code>pop_off</code>重新使能中断。</p>
 <p>6.5 re-entrant locks</p>
@@ -397,7 +397,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>MIT6.S081-chapter6</div>
-      <div>http://example.com/2023/03/20/MIT6-S081-chapter6/</div>
+      <div>http://example.com/2023/03/10/MIT6-S081-chapter6/</div>
     </div>
     <div class="license-meta">
       
@@ -409,7 +409,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月20日</div>
+          <div>2023年3月10日</div>
         </div>
       
       
@@ -441,7 +441,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/20/MIT6-S081-chapter7/" title="MIT6.S081-chapter7">
+                      <a href="/2023/03/15/MIT6-S081-chapter7/" title="MIT6.S081-chapter7">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">MIT6.S081-chapter7</span>
                         <span class="visible-mobile">上一篇</span>
@@ -451,7 +451,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/20/MIT6-S081-chapter5/" title="MIT6.S081-chapter5">
+                      <a href="/2023/03/01/MIT6-S081-chapter5/" title="MIT6.S081-chapter5">
                         <span class="hidden-mobile">MIT6.S081-chapter5</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
