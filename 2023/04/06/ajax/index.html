@@ -16,22 +16,21 @@
   <meta name="author" content="Peng">
   <meta name="keywords" content="">
   
-    <meta name="description" content="C++中阻塞IO和非阻塞IO的区别在C++中，阻塞I&#x2F;O和非阻塞I&#x2F;O的主要区别在于对I&#x2F;O操作的等待方式。 阻塞I&#x2F;O（Blocking I&#x2F;O）指的是当应用程序执行I&#x2F;O操作时，如果I&#x2F;O操作没有完成，则应用程序会一直等待直到I&#x2F;O操作完成为止。在这个过程中，应用程序会被阻塞，不能执行其他任务。当I&#x2F;O操">
+    <meta name="description" content="常用的ajax方法：1.GET方法：12345678910111213141516171819202122$.ajax(&amp;#123;    url:&quot;https:&#x2F;&#x2F;www.example.top&quot;,    type:&quot;GET&quot;,    data:&amp;#123;        username:&quot;xx&quot;, age:18,    &amp;#125;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="chatgpt带我学IO复用">
-<meta property="og:url" content="http://example.com/2023/03/22/chatgpt%E5%B8%A6%E6%88%91%E5%AD%A6IO%E5%A4%8D%E7%94%A8/index.html">
+<meta property="og:title" content="ajax">
+<meta property="og:url" content="http://example.com/2023/04/06/ajax/index.html">
 <meta property="og:site_name" content="学习笔记">
-<meta property="og:description" content="C++中阻塞IO和非阻塞IO的区别在C++中，阻塞I&#x2F;O和非阻塞I&#x2F;O的主要区别在于对I&#x2F;O操作的等待方式。 阻塞I&#x2F;O（Blocking I&#x2F;O）指的是当应用程序执行I&#x2F;O操作时，如果I&#x2F;O操作没有完成，则应用程序会一直等待直到I&#x2F;O操作完成为止。在这个过程中，应用程序会被阻塞，不能执行其他任务。当I&#x2F;O操">
+<meta property="og:description" content="常用的ajax方法：1.GET方法：12345678910111213141516171819202122$.ajax(&amp;#123;    url:&quot;https:&#x2F;&#x2F;www.example.top&quot;,    type:&quot;GET&quot;,    data:&amp;#123;        username:&quot;xx&quot;, age:18,    &amp;#125;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-03-22T09:45:56.000Z">
-<meta property="article:modified_time" content="2023-03-22T09:49:26.359Z">
+<meta property="article:published_time" content="2023-04-06T13:23:42.000Z">
+<meta property="article:modified_time" content="2023-04-06T13:54:14.514Z">
 <meta property="article:author" content="Peng">
-<meta property="article:tag" content="chatgpt带我学">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>chatgpt带我学IO复用 - 学习笔记</title>
+  <title>ajax - 学习笔记</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +213,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="chatgpt带我学IO复用"></span>
+            <span id="subtitle" data-typed-text="ajax"></span>
           
         </div>
 
@@ -225,8 +224,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-22 17:45" pubdate>
-          2023年3月22日 下午
+        <time datetime="2023-04-06 21:23" pubdate>
+          2023年4月6日 晚上
         </time>
       </span>
     
@@ -237,7 +236,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.8k 字
+          1.5k 字
         
       </span>
     
@@ -248,7 +247,7 @@
         
         
         
-          24 分钟
+          13 分钟
         
       </span>
     
@@ -294,42 +293,62 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">chatgpt带我学IO复用</h1>
+            <h1 style="display: none">ajax</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="C-中阻塞IO和非阻塞IO的区别"><a href="#C-中阻塞IO和非阻塞IO的区别" class="headerlink" title="C++中阻塞IO和非阻塞IO的区别"></a>C++中阻塞IO和非阻塞IO的区别</h3><p>在C++中，阻塞I&#x2F;O和非阻塞I&#x2F;O的主要区别在于对I&#x2F;O操作的等待方式。</p>
-<p>阻塞I&#x2F;O（Blocking I&#x2F;O）指的是当应用程序执行I&#x2F;O操作时，如果I&#x2F;O操作没有完成，则应用程序会一直等待直到I&#x2F;O操作完成为止。在这个过程中，应用程序会被阻塞，不能执行其他任务。当I&#x2F;O操作完成后，应用程序才会继续执行。例如，当使用<code>std::cin</code>进行输入操作时，输入流会一直等待用户输入，直到输入完成后才会继续执行程序。</p>
-<p>非阻塞I&#x2F;O（Non-blocking I&#x2F;O）指的是当应用程序执行I&#x2F;O操作时，如果I&#x2F;O操作没有完成，则应用程序不会等待，而是立即返回一个错误码或空数据。在这个过程中，应用程序可以继续执行其他任务，不会被阻塞。应用程序需要轮询I&#x2F;O操作的状态，直到I&#x2F;O操作完成为止。例如，当使用socket进行网络通信时，可以使用<code>fcntl</code>函数将<code>socket</code>设置为非阻塞模式，当进行读写操作时，如果数据还没有准备好，则函数会立即返回一个错误码，应用程序需要继续轮询直到数据准备好为止。</p>
-<p>阻塞I&#x2F;O和非阻塞I&#x2F;O都有其优缺点。阻塞I&#x2F;O可以确保I&#x2F;O操作完成后再继续执行程序，但是可能会导致应用程序的效率低下，因为在等待I&#x2F;O操作完成的过程中，应用程序无法执行其他任务。非阻塞I&#x2F;O可以提高应用程序的效率，因为在等待I&#x2F;O操作完成的过程中可以执行其他任务，但是需要消耗更多的系统资源，并且编写代码可能会更加复杂。因此，在选择阻塞I&#x2F;O和非阻塞I&#x2F;O时需要根据具体的应用场景和需求来决定。</p>
-<h3 id="select、poll、epoll三者的区别"><a href="#select、poll、epoll三者的区别" class="headerlink" title="select、poll、epoll三者的区别"></a>select、poll、epoll三者的区别</h3><p><code>select</code>、<code>poll</code>和<code>epoll</code>都是Linux下常用的I&#x2F;O多路复用机制，它们可以同时监控多个文件描述符的可读可写状态，并在有数据可读或可写时返回，从而避免了使用阻塞I&#x2F;O造成的线程等待和系统调用开销过大的问题。它们的区别如下：</p>
-<ol>
-<li>select和poll的效率会随着文件描述符数量的增加而降低，而epoll则不会受到文件描述符数量的影响。</li>
-<li>select和poll使用轮询的方式进行文件描述符的检测，而epoll使用事件通知的方式，当有数据到达时会通知应用程序，这样可以避免不必要的轮询，提高了效率。</li>
-<li>select和poll支持的文件描述符数量有限，一般在1024以内，而epoll没有限制。</li>
-<li>select和poll会将所有监控的文件描述符从用户空间复制到内核空间，这个过程需要开销，并且每次调用都要重复，而epoll在添加和删除文件描述符时只需要将文件描述符添加到一个内核事件表中，这个表只需要在初始化时复制一次，这样可以减少系统调用和内存开销。</li>
-<li>select和poll需要遍历整个监控的文件描述符列表，而epoll会将就绪的文件描述符存放到一个就绪队列中，应用程序只需要处理就绪队列中的文件描述符即可。</li>
-</ol>
-<p>总之，epoll相对于select和poll具有更高的效率和更好的扩展性，适合高并发和大规模的网络应用。但是，对于一些小型应用，select和poll可能是更加简单和实用的选择。</p>
-<p>epoll的LT和ET模式的理解：</p>
-<p>LT模式：当<code>epoll_wait</code>检测到描述符事件发⽣并将此事件通知应⽤程序，应⽤程序可以不⽴即处理该事件。下次调⽤<code>epoll_wait</code>时，会再次响应应⽤程序并通知此事件。<br>ET模式：当<code>epoll_wait</code>检测到描述符事件发⽣并将此事件通知应⽤程序，应⽤程序必须⽴即处理该事件。如果不处理，下次调⽤<code>epoll_wait</code>时，不会再次响应应⽤程序并通知此事件。  </p>
-<h4 id="它们三者的底层实现"><a href="#它们三者的底层实现" class="headerlink" title="它们三者的底层实现"></a>它们三者的底层实现</h4><p><code>select</code>、<code>poll</code>和<code>epoll</code>都是I&#x2F;O多路复用机制，它们的底层实现有所不同。</p>
-<ol>
-<li><code>select</code>底层实现：<code>select</code>使用<strong>轮询</strong>的方式进行文件描述符的检测，其核心数据结构是一个<code>fd_set</code>类型的数组。当应用程序调用<code>select</code>时，会将所有待监控的文件描述符从用户空间复制到内核空间，然后在内核空间遍历这些文件描述符，检查它们是否准备好进行I&#x2F;O操作，如果准备好了，则将其加入到一个结果集中并返回。这个过程需要将所有的文件描述符复制到内核空间，而且每次调用都需要重新复制，因此效率较低。</li>
-<li><code>poll</code>底层实现：<code>poll</code>也使用<strong>轮询</strong>的方式进行文件描述符的检测，其核心数据结构是一个<code>pollfd</code>类型的数组。当应用程序调用<code>poll</code>时，会将所有待监控的文件描述符从用户空间复制到内核空间，然后在内核空间遍历这些文件描述符，检查它们是否准备好进行I&#x2F;O操作，如果准备好了，则将其加入到一个结果集中并返回。和select类似，这个过程需要将所有的文件描述符复制到内核空间，而且每次调用都需要重新复制，因此效率较低。</li>
-<li><code>epoll</code>底层实现：<code>epoll</code>使用事件通知的方式进行文件描述符的检测，其核心数据结构是一个<strong>内核事件表</strong>。当应用程序调用<code>epoll</code>时，会将待监控的文件描述符加入到内核事件表中，并注册对应的事件类型（可读、可写、异常等）。当有文件描述符准备好进行I&#x2F;O操作时，内核会将其加入到一个就绪队列中，并通过一个回调函数通知应用程序。这个过程只需要将文件描述符添加到内核事件表中，不需要重复复制，因此效率较高。[没有最大的并发连接限制，内存拷贝、利用mmap()文件映射内存加速与内核空间的消息传递。]</li>
-</ol>
-<p>综上所述，epoll比select和poll具有更高的效率和更好的扩展性。</p>
-<h3 id="IO复用的原理"><a href="#IO复用的原理" class="headerlink" title="IO复用的原理"></a>IO复用的原理</h3><p>IO多路复用（IO multiplexing）是一种利用操作系统提供的一些系统调用（如select、poll、epoll等）来实现同时监控多个文件描述符的状态，从而实现高效的IO操作的技术。其原理基于操作系统提供的异步IO机制，使得可以同时监视多个文件描述符的可读、可写、异常等事件，当有IO事件发生时，操作系统会通知应用程序进行相应的处理。</p>
-<p>具体实现时，IO多路复用可以用于在一个进程中同时处理多个socket连接。当某个socket上有数据到达时，操作系统会通过系统调用返回这个socket的文件描述符，应用程序可以通过读取该文件描述符中的数据来处理网络通信。</p>
-<p>相比于传统的多线程或多进程模型，IO多路复用具有以下优点：</p>
-<ul>
-<li>能够高效地处理大量的连接，避免了线程或进程切换的开销。</li>
-<li>能够实现高并发和高性能的网络通信，可以同时处理多个连接的IO操作。</li>
-<li>能够有效地避免网络连接因为阻塞等原因导致的资源浪费，提高了系统的资源利用率。</li>
-</ul>
-<p>IO多路复用是实现高性能网络通信的重要技术之一，在网络编程中得到广泛应用。</p>
+                <h3 id="常用的ajax方法："><a href="#常用的ajax方法：" class="headerlink" title="常用的ajax方法："></a>常用的ajax方法：</h3><h4 id="1-GET方法："><a href="#1-GET方法：" class="headerlink" title="1.GET方法："></a>1.GET方法：</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js">$.<span class="hljs-title function_">ajax</span>(&#123;<br>    <span class="hljs-attr">url</span>:<span class="hljs-string">&quot;https://www.example.top&quot;</span>,<br>    <span class="hljs-attr">type</span>:<span class="hljs-string">&quot;GET&quot;</span>,<br>    <span class="hljs-attr">data</span>:&#123;<br>        <span class="hljs-attr">username</span>:<span class="hljs-string">&quot;xx&quot;</span>, <span class="hljs-attr">age</span>:<span class="hljs-number">18</span>,<br>    &#125;,<br>    <span class="hljs-attr">dataType</span>: <span class="hljs-string">&quot;json&quot;</span>,<br>    <span class="hljs-attr">success</span>:<span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>)&#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;success&quot;</span>);<br>    &#125;,<br>&#125;);<br><br><span class="hljs-comment">//实战小例子</span><br>$ajax(&#123;<br>    <span class="hljs-attr">url</span>:<span class="hljs-string">&quot;https://www.toptop.tech/settings/web/apply_code&quot;</span>,<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;GET&quot;</span>,<br>    <span class="hljs-attr">success</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>)&#123;<br>        <span class="hljs-keyword">if</span>(resp.<span class="hljs-property">result</span> === <span class="hljs-string">&quot;success&quot;</span>)&#123;<br>            <span class="hljs-variable language_">window</span>.<span class="hljs-property">location</span>.<span class="hljs-title function_">replace</span>(resp.<span class="hljs-property">apply_code_url</span>);<br>        &#125;<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-POST方法："><a href="#2-POST方法：" class="headerlink" title="2.POST方法："></a>2.POST方法：</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs js">$.<span class="hljs-title function_">ajax</span>(&#123;<br>    <span class="hljs-attr">url</span>: url,<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;POST&quot;</span>,<br>    <span class="hljs-attr">data</span>: &#123;<br>    &#125;,<br>    <span class="hljs-attr">dataType</span>: <span class="hljs-string">&quot;json&quot;</span>,<br>    <span class="hljs-attr">success</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">resp</span>) &#123;<br><br>    &#125;,<br>&#125;);<br><br><span class="hljs-comment">//实战小例子</span><br>$ajax(&#123;<br>    <span class="hljs-attr">url</span>:<span class="hljs-string">&quot;https://www.toptop.tech/settings/token&quot;</span>,<br>    <span class="hljs-attr">type</span>:<span class="hljs-string">&quot;POST&quot;</span>,<br>    <span class="hljs-attr">data</span>:&#123;<br>        <span class="hljs-attr">username</span>: username,<br>        <span class="hljs-attr">password</span>:password,<br>    &#125;<br>    <span class="hljs-attr">success</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>)&#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(resp);<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">root</span>.<span class="hljs-property">access</span> = resp.<span class="hljs-property">access</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">root</span>.<span class="hljs-property">refresh</span> = resp.<span class="hljs-property">refresh</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">refresh_jwt_token</span>();<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getinfo_web</span>();<br>&#125;,<br><span class="hljs-attr">error</span>:<span class="hljs-function">()=&gt;</span>&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">$login_error_message</span>.<span class="hljs-title function_">html</span>(<span class="hljs-string">&quot;用户名或密码错误&quot;</span>);<br>&#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>url</td>
+<td>必需，请求url</td>
+</tr>
+<tr>
+<td>type</td>
+<td>GET、POST</td>
+</tr>
+<tr>
+<td>datatype</td>
+<td>一般为json、还可为script、html、xml等</td>
+</tr>
+<tr>
+<td>data</td>
+<td>可选，请求数据</td>
+</tr>
+<tr>
+<td>success</td>
+<td>可选，当请求成功时运行的函数，函数形式：function(data, status, xhr){….},其中参数data表示服务器返回的数据，status表示请求的状态，xhr表示XMLHttpRequest对象</td>
+</tr>
+<tr>
+<td>error</td>
+<td>如果请求失败要运行的函数，函数形式同success</td>
+</tr>
+<tr>
+<td>async</td>
+<td>是否异步请求，默认为true</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>请求超时时间</td>
+</tr>
+<tr>
+<td>complete</td>
+<td>请求完成时运行的函数，（在请求成功或失败之后均调用），函数形式同success</td>
+</tr>
+</tbody></table>
+<p>JSON对象用于序列化对象、数组、数值、字符串、布尔值、和null。</p>
+<p>常用API：<code>JSON.parse()</code>:将字符串解析成对象</p>
+<p>​		<code>JSON.stringify()</code>:将对象转化为字符串</p>
 
                 
               </div>
@@ -339,13 +358,6 @@
               <div class="post-metas my-3">
   
   
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/chatgpt%E5%B8%A6%E6%88%91%E5%AD%A6/">#chatgpt带我学</a>
-      
-    </div>
-  
 </div>
 
 
@@ -354,8 +366,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>chatgpt带我学IO复用</div>
-      <div>http://example.com/2023/03/22/chatgpt带我学IO复用/</div>
+      <div>ajax</div>
+      <div>http://example.com/2023/04/06/ajax/</div>
     </div>
     <div class="license-meta">
       
@@ -367,7 +379,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月22日</div>
+          <div>2023年4月6日</div>
         </div>
       
       
@@ -399,18 +411,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/06/ajax/" title="ajax">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">ajax</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/21/chatpgt%E7%94%9F%E6%88%90%E7%B3%BB%E5%88%97-%E4%B9%8B%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="chatpgt生成系列-之信号量实现线程同步">
-                        <span class="hidden-mobile">chatpgt生成系列-之信号量实现线程同步</span>
+                      <a href="/2023/03/22/chatgpt%E5%B8%A6%E6%88%91%E5%AD%A6IO%E5%A4%8D%E7%94%A8/" title="chatgpt带我学IO复用">
+                        <span class="hidden-mobile">chatgpt带我学IO复用</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
